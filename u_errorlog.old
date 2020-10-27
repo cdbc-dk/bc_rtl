@@ -1,0 +1,65 @@
+unit u_errorlog;
+
+{$mode objfpc}{$H+}
+{$define debugmode}
+interface
+
+uses
+  Classes, SysUtils, FileUtil;
+
+const
+ {$ifdef Linux}
+   OSDIRSEPARATOR = '/';
+   CRLF = #10;
+ {$endif}
+ {$ifdef win32}
+   OSDIRSEPARATOR = '\';
+   CRLF = #13#10;
+ {$endif}
+
+type
+  { TErrorLog }
+  TErrorLog = class
+  protected
+    fFile: TFileStream;
+    fError: string;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure LogLn(const anErrorLine: string);
+  end;
+
+var
+  ErrorLog: TErrorLog;
+
+implementation
+
+{ TErrorLog }
+constructor TErrorLog.Create;
+var S: string;
+begin
+  inherited Create;
+  S:= ExtractFilePath(ParamStr(0)) + 'error.log';
+  fFile:= TFileStream.Create(S,fmcreate or fmOpenReadWrite or fmShareDenyNone);
+  fFile.Seek(0,soFromEnd); // appending logs to end of file
+end; { TErrorLog }
+
+destructor TErrorLog.Destroy;
+begin
+  fFile.Free;
+  inherited Destroy;
+end; { TErrorLog }
+
+procedure TErrorLog.LogLn(const anErrorLine: string);
+var S: string;
+begin
+  S:= anErrorLine+CRLF;
+  fFile.Write(S[1],length(S));
+end; { TErrorLog }
+
+initialization
+  ErrorLog:= TErrorLog.Create;
+finalization
+  FreeAndNil(ErrorLog);
+end.
+

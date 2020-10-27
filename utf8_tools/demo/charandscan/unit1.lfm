@@ -1,0 +1,119 @@
+object Form1: TForm1
+  Left = 219
+  Height = 600
+  Top = 104
+  Width = 1024
+  ActiveControl = Panel1
+  Caption = 'Form1'
+  ClientHeight = 600
+  ClientWidth = 1024
+  LCLVersion = '1.0.14.0'
+  object Panel1: TPanel
+    Left = 0
+    Height = 50
+    Top = 0
+    Width = 1024
+    Align = alTop
+    ClientHeight = 50
+    ClientWidth = 1024
+    TabOrder = 0
+    object Button1: TButton
+      Left = 12
+      Height = 25
+      Top = 11
+      Width = 96
+      AutoSize = True
+      Caption = 'Replace Scan'
+      OnClick = Button1Click
+      TabOrder = 0
+    end
+    object Button2: TButton
+      Left = 112
+      Height = 25
+      Top = 11
+      Width = 101
+      AutoSize = True
+      Caption = 'Replace Index'
+      OnClick = Button2Click
+      TabOrder = 1
+    end
+    object Button3: TButton
+      Left = 216
+      Height = 25
+      Top = 11
+      Width = 71
+      AutoSize = True
+      Caption = 'TitleCase'
+      OnClick = Button3Click
+      TabOrder = 2
+    end
+    object Button4: TButton
+      Left = 296
+      Height = 25
+      Top = 11
+      Width = 81
+      AutoSize = True
+      Caption = 'LowerCase'
+      OnClick = Button4Click
+      TabOrder = 3
+    end
+    object Button5: TButton
+      Left = 384
+      Height = 25
+      Top = 11
+      Width = 72
+      AutoSize = True
+      Caption = 'Case Test'
+      OnClick = Button5Click
+      TabOrder = 4
+    end
+    object Button6: TButton
+      Left = 466
+      Height = 25
+      Top = 11
+      Width = 77
+      AutoSize = True
+      Caption = 'Normalize'
+      OnClick = Button6Click
+      TabOrder = 5
+    end
+  end
+  object Memo1: TMemo
+    Left = 0
+    Height = 531
+    Top = 50
+    Width = 1024
+    Align = alClient
+    Color = clInfoBk
+    Font.Color = clBlue
+    Font.Height = -21
+    Lines.Strings = (
+      'Examples'
+      'Digraphs: ǉǉan'
+      'General Punctuation: ”test„'
+      'Combined Chars: ÅÅ'
+      ''
+      'Free Pascal (FPC) ist ein Open-Source Pascal Compiler mit zwei bemerkenswerten Features: '
+      'ein hohes Maß an Delphi Kompatibilität und die Verfügbarkeit auf verschiedenen Plattformen, '
+      'inklusive Windows, Mac OS X und Linux. '
+      'Die Free Pascal Kompatibilität mit Delphi beinhaltet nicht nur die Unterstützung für die selbe Object Pascal '
+      'Programmiersprache, die Delphi verwendet, sondern auch für viele Bibliotheken mit leistungsstarken '
+      'Routinen und Klassen, für die Delphi mit Recht bekannt ist. '
+      'Dies beinhaltet vertraute Units wie System, SysUtils, StrUtils, DateUtils, Classes, Variants, Math, IniFiles und '
+      'Registry, die in Free Pascal enthalten sind auf allen unterstützten Plattformen. '
+      'Free Pascal enthält auch Units wie Windows, ShellAPI, BaseUnix, Unix und DynLibs für den Zugriff auf '
+      'plattformspezifische Features. Dieses (ungefähre) Dutzend von Units bildet den Kern dessen, '
+      'was üblicherweise die Free Pascal Laufzeitbibliothek (RTL) genannt wird. '
+    )
+    OnKeyUp = Memo1KeyUp
+    ParentFont = False
+    TabOrder = 1
+  end
+  object StatusBar1: TStatusBar
+    Left = 0
+    Height = 19
+    Top = 581
+    Width = 1024
+    Panels = <>
+  end
+end

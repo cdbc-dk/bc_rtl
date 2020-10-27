@@ -1,0 +1,128 @@
+object Form1: TForm1
+  Left = 474
+  Height = 251
+  Top = 164
+  Width = 314
+  Caption = 'Simple TFTP-Client'
+  ClientHeight = 251
+  ClientWidth = 314
+  Color = clBtnFace
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  Position = poScreenCenter
+  LCLVersion = '2.0.4.0'
+  object Label2: TLabel
+    Left = 8
+    Height = 14
+    Top = 145
+    Width = 77
+    Anchors = [akLeft, akBottom]
+    Caption = 'TargetSystem'
+    ParentColor = False
+  end
+  object Label3: TLabel
+    Left = 191
+    Height = 14
+    Top = 145
+    Width = 58
+    Anchors = [akRight, akBottom]
+    Caption = 'TargetPort'
+    ParentColor = False
+  end
+  object Label4: TLabel
+    Left = 8
+    Height = 14
+    Top = 169
+    Width = 90
+    Anchors = [akLeft, akBottom]
+    Caption = 'FileName to Get'
+    ParentColor = False
+  end
+  object Log: TMemo
+    Left = 8
+    Height = 129
+    Top = 8
+    Width = 289
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    ScrollBars = ssVertical
+    TabOrder = 0
+  end
+  object BExit: TButton
+    Left = 222
+    Height = 23
+    Top = 194
+    Width = 55
+    Anchors = [akBottom]
+    Caption = 'E&xit'
+    OnClick = BExitClick
+    TabOrder = 1
+  end
+  object BAbout: TButton
+    Left = 27
+    Height = 23
+    Top = 194
+    Width = 55
+    Anchors = [akBottom]
+    Caption = '&About'
+    OnClick = BAboutClick
+    TabOrder = 2
+  end
+  object TargetSystemEdit: TEdit
+    Left = 88
+    Height = 26
+    Top = 138
+    Width = 104
+    Anchors = [akLeft, akRight, akBottom]
+    TabOrder = 3
+    Text = '127.0.0.1'
+  end
+  object TargetPortEdit: TEdit
+    Left = 255
+    Height = 26
+    Top = 138
+    Width = 41
+    Anchors = [akRight, akBottom]
+    TabOrder = 4
+    Text = '69'
+  end
+  object TargetFileEdit: TEdit
+    Left = 88
+    Height = 26
+    Top = 162
+    Width = 208
+    Anchors = [akLeft, akRight, akBottom]
+    TabOrder = 5
+  end
+  object BGetFile: TButton
+    Left = 94
+    Height = 23
+    Top = 194
+    Width = 55
+    Anchors = [akBottom]
+    Caption = '&Get File'
+    OnClick = BGetFileClick
+    TabOrder = 6
+  end
+  object BPutFile: TButton
+    Left = 158
+    Height = 23
+    Top = 194
+    Width = 55
+    Anchors = [akBottom]
+    Caption = '&Put File'
+    OnClick = BPutFileClick
+    TabOrder = 7
+  end
+  object OpenDialog: TOpenDialog
+    Title = 'Select File to put ...'
+    FilterIndex = 0
+    left = 16
+    top = 16
+  end
+  object SaveDialog: TSaveDialog
+    Title = 'Save File ...'
+    left = 48
+    top = 16
+  end
+end

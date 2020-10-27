@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <Compiler Value="/usr/bin/fpc" Date="1569302157"/>
+  <Params Value=" -MObjFPC -Scghi -Cg -O1 -g -gl -l -vewnhibq -Fu/usr/lib64/lazarus/packager/units/x86_64-linux -Fu/home/sh/src/library_2020/synapse/source/lib/ -FU/home/sh/src/library_2020/synapse/source/lib/lib/x86_64-linux/ laz_synapse.pas"/>
+</CONFIG>

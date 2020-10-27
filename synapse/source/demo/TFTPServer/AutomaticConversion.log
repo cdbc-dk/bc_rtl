@@ -1,0 +1,26 @@
+* Converting file /home/bc/src/library_2014/synapse/source/demo/TFTPServer/TFTPServer.dpr *
+Added defines -dBorland -dVer150 -dDelphi7 -dCompiler6_Up -dPUREPASCAL in custom options
+Found all unit files
+* Fixing used units for file /home/bc/src/library_2014/synapse/source/demo/TFTPServer/TFTPServer.dpr *
+
+*** Converting unit files belonging to project/package ***
+* Converting file /home/bc/src/library_2014/synapse/source/demo/TFTPServer/MainBox.pas *
+Replaced unit "Windows" with "LCLIntf, LCLType, LMessages" in uses section.
+* Converting file /home/bc/src/library_2014/synapse/source/demo/TFTPServer/TFTPDaemonThread.pas *
+Replaced call FileExists(MainForm.PathEdit.Text + FileName) with FileExistsUTF8(MainForm.PathEdit.Text + FileName) { *Converted from FileExists* }
+Added unit FileUtil to uses section
+Replaced call FileExists(MainForm.PathEdit.Text + FileName) with FileExistsUTF8(MainForm.PathEdit.Text + FileName) { *Converted from FileExists* }
+
+*** Converting unit files found during conversion ***
+* Converting file /home/bc/src/library_2014/synapse/source/lib/ftptsend.pas *
+
+*** Fixing used units and Repairing form files ***
+* Repairing form file /home/bc/src/library_2014/synapse/source/demo/TFTPServer/MainBox.lfm *
+Removed property "TextHeight".
+Removed property "DesignSize".
+Removed property "OldCreateOrder".
+* Fixing used units for file /home/bc/src/library_2014/synapse/source/demo/TFTPServer/MainBox.pas *
+* Fixing used units for file /home/bc/src/library_2014/synapse/source/demo/TFTPServer/TFTPDaemonThread.pas *
+* Fixing used units for file /home/bc/src/library_2014/synapse/source/lib/ftptsend.pas *
+Conversion took: 00:00:26
+Conversion Ready.

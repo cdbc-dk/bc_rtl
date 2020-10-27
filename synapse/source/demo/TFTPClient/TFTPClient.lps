@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <ProjectSession>
+    <Version Value="11"/>
+    <BuildModes Active="Default"/>
+    <Units Count="14">
+      <Unit0>
+        <Filename Value="TFTPClient.lpr"/>
+        <IsPartOfProject Value="True"/>
+        <CursorPos X="39" Y="9"/>
+        <UsageCount Value="22"/>
+        <Loaded Value="True"/>
+        <DefaultSyntaxHighlighter Value="Delphi"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="MainBox.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="Form1"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="1"/>
+        <TopLine Value="109"/>
+        <CursorPos Y="62"/>
+        <UsageCount Value="22"/>
+        <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
+        <DefaultSyntaxHighlighter Value="Delphi"/>
+      </Unit1>
+      <Unit2>
+        <Filename Value="../TFTPServer/ConverterBackup/ftptsend.pas"/>
+        <IsPartOfProject Value="True"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="252"/>
+        <CursorPos Y="262"/>
+        <UsageCount Value="22"/>
+        <DefaultSyntaxHighlighter Value="Delphi"/>
+      </Unit2>
+      <Unit3>
+        <Filename Value="../../lib/blcksock.pas"/>
+        <EditorIndex Value="2"/>
+        <TopLine Value="2352"/>
+        <CursorPos Y="2361"/>
+        <UsageCount Value="11"/>
+        <Loaded Value="True"/>
+        <DefaultSyntaxHighlighter Value="Delphi"/>
+      </Unit3>
+      <Unit4>
+        <Filename Value="/usr/lib/lazarus/lcl/include/control.inc"/>
+        <TopLine Value="3250"/>
+        <CursorPos Y="3269"/>
+        <UsageCount Value="10"/>
+      </Unit4>
+      <Unit5>
+        <Filename Value="../../lib/synaip.pas"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="124"/>
+        <CursorPos Y="138"/>
+        <UsageCount Value="10"/>
+        <DefaultSyntaxHighlighter Value="Delphi"/>
+      </Unit5>
+      <Unit6>
+        <Filename Value="../../lib/synautil.pas"/>
+        <TopLine Value="1404"/>
+        <CursorPos Y="1418"/>
+        <UsageCount Value="10"/>
+        <DefaultSyntaxHighlighter Value="Delphi"/>
+      </Unit6>
+      <Unit7>
+        <Filename Value="../../lib/ssfpc.inc"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="566"/>
+        <CursorPos Y="575"/>
+        <UsageCount Value="10"/>
+        <DefaultSyntaxHighlighter Value="Delphi"/>
+      </Unit7>
+      <Unit8>
+        <Filename Value="/usr/lib64/lazarus/lcl/include/control.inc"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="2236"/>
+        <CursorPos Y="2244"/>
+        <UsageCount Value="10"/>
+      </Unit8>
+      <Unit9>
+        <Filename Value="/usr/lib64/lazarus/lcl/include/buttoncontrol.inc"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="13"/>
+        <CursorPos Y="22"/>
+        <UsageCount Value="10"/>
+      </Unit9>
+      <Unit10>
+        <Filename Value="/usr/lib64/lazarus/lcl/include/buttons.inc"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="162"/>
+        <CursorPos Y="170"/>
+        <UsageCount Value="10"/>
+      </Unit10>
+      <Unit11>
+        <Filename Value="/usr/lib64/lazarus/lcl/include/wincontrol.inc"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="5412"/>
+        <CursorPos Y="5420"/>
+        <UsageCount Value="10"/>
+      </Unit11>
+      <Unit12>
+        <Filename Value="/usr/lib64/lazarus/lcl/lclmessageglue.pas"/>
+        <UnitName Value="LCLMessageGlue"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="250"/>
+        <CursorPos Y="123"/>
+        <UsageCount Value="10"/>
+      </Unit12>
+      <Unit13>
+        <Filename Value="/usr/lib64/lazarus/lcl/interfaces/gtk2/gtk2wsstdctrls.pp"/>
+        <UnitName Value="Gtk2WSStdCtrls"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="2454"/>
+        <CursorPos X="68" Y="2460"/>
+        <UsageCount Value="10"/>
+      </Unit13>
+    </Units>
+    <JumpHistory Count="15" HistoryIndex="14">
+      <Position1>
+        <Filename Value="../../lib/blcksock.pas"/>
+        <Caret Line="2775" TopLine="2767"/>
+      </Position1>
+      <Position2>
+        <Filename Value="../../lib/blcksock.pas"/>
+        <Caret Line="2776" TopLine="2767"/>
+      </Position2>
+      <Position3>
+        <Filename Value="../../lib/blcksock.pas"/>
+        <Caret Line="2766" TopLine="2758"/>
+      </Position3>
+      <Position4>
+        <Filename Value="../../lib/blcksock.pas"/>
+        <Caret Line="2779" TopLine="2771"/>
+      </Position4>
+      <Position5>
+        <Filename Value="../../lib/blcksock.pas"/>
+        <Caret Line="2780" TopLine="2771"/>
+      </Position5>
+      <Position6>
+        <Filename Value="../../lib/blcksock.pas"/>
+        <Caret Line="2782" TopLine="2771"/>
+      </Position6>
+      <Position7>
+        <Filename Value="../../lib/blcksock.pas"/>
+        <Caret Line="2348" TopLine="2340"/>
+      </Position7>
+      <Position8>
+        <Filename Value="../../lib/blcksock.pas"/>
+        <Caret Line="2351" TopLine="2340"/>
+      </Position8>
+      <Position9>
+        <Filename Value="../../lib/blcksock.pas"/>
+        <Caret Line="2360" TopLine="2352"/>
+      </Position9>
+      <Position10>
+        <Filename Value="../../lib/blcksock.pas"/>
+        <Caret Line="2361" TopLine="2352"/>
+      </Position10>
+      <Position11>
+        <Filename Value="MainBox.pas"/>
+        <Caret Line="83" TopLine="70"/>
+      </Position11>
+      <Position12>
+        <Filename Value="MainBox.pas"/>
+        <Caret Line="84" TopLine="70"/>
+      </Position12>
+      <Position13>
+        <Filename Value="MainBox.pas"/>
+        <Caret Line="87" TopLine="79"/>
+      </Position13>
+      <Position14>
+        <Filename Value="MainBox.pas"/>
+        <Caret Line="88" TopLine="79"/>
+      </Position14>
+      <Position15>
+        <Filename Value="MainBox.pas"/>
+        <Caret Line="90" TopLine="79"/>
+      </Position15>
+    </JumpHistory>
+    <RunParams>
+      <FormatVersion Value="2"/>
+      <Modes Count="0" ActiveMode="default"/>
+    </RunParams>
+  </ProjectSession>
+</CONFIG>

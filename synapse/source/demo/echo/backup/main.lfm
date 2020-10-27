@@ -1,0 +1,44 @@
+object frmMain: TfrmMain
+  Left = 497
+  Height = 295
+  Top = 234
+  Width = 504
+  Caption = 'Echo Server'
+  ClientHeight = 295
+  ClientWidth = 504
+  Font.Color = clWindowText
+  Font.Height = -13
+  Font.Name = 'MS Sans Serif'
+  OnCreate = FormCreate
+  LCLVersion = '2.0.4.0'
+  object StartServer: TButton
+    Left = 8
+    Height = 25
+    Top = 8
+    Width = 193
+    Caption = 'Run TCP Echo Server'
+    OnClick = StartServerClick
+    TabOrder = 0
+  end
+  object DoneServer: TButton
+    Left = 8
+    Height = 25
+    Top = 42
+    Width = 192
+    Caption = '&Terminate Server'
+    OnClick = DoneServerClick
+    TabOrder = 1
+  end
+  object Memo1: TMemo
+    Left = 13
+    Height = 205
+    Top = 83
+    Width = 475
+    Color = clBlack
+    Font.Color = clYellow
+    Font.Height = -13
+    Font.Name = 'MS Sans Serif'
+    ParentFont = False
+    TabOrder = 2
+  end
+end

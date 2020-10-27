@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <ProjectSession>
+    <Version Value="9"/>
+    <BuildModes Active="Default"/>
+    <Units Count="8">
+      <Unit0>
+        <Filename Value="TFTPClient.lpr"/>
+        <IsPartOfProject Value="True"/>
+        <EditorIndex Value="0"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="11" Y="8"/>
+        <UsageCount Value="20"/>
+        <Loaded Value="True"/>
+        <DefaultSyntaxHighlighter Value="Delphi"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="MainBox.pas"/>
+        <IsPartOfProject Value="True"/>
+        <HasResources Value="True"/>
+        <UnitName Value="MainBox"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="1"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="58"/>
+        <CursorPos X="1" Y="74"/>
+        <UsageCount Value="20"/>
+        <Loaded Value="True"/>
+        <DefaultSyntaxHighlighter Value="Delphi"/>
+      </Unit1>
+      <Unit2>
+        <Filename Value="../TFTPServer/ConverterBackup/ftptsend.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="ftptsend"/>
+        <EditorIndex Value="2"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="147"/>
+        <CursorPos X="1" Y="167"/>
+        <UsageCount Value="20"/>
+        <Loaded Value="True"/>
+        <DefaultSyntaxHighlighter Value="Delphi"/>
+      </Unit2>
+      <Unit3>
+        <Filename Value="../../lib/blcksock.pas"/>
+        <UnitName Value="blcksock"/>
+        <EditorIndex Value="3"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="3556"/>
+        <CursorPos X="42" Y="3592"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+        <DefaultSyntaxHighlighter Value="Delphi"/>
+      </Unit3>
+      <Unit4>
+        <Filename Value="/usr/lib/lazarus/lcl/include/control.inc"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="3250"/>
+        <CursorPos X="1" Y="3269"/>
+        <UsageCount Value="10"/>
+      </Unit4>
+      <Unit5>
+        <Filename Value="../../lib/synaip.pas"/>
+        <UnitName Value="synaip"/>
+        <EditorIndex Value="5"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="126"/>
+        <CursorPos X="1" Y="138"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+        <DefaultSyntaxHighlighter Value="Delphi"/>
+      </Unit5>
+      <Unit6>
+        <Filename Value="../../lib/synautil.pas"/>
+        <UnitName Value="synautil"/>
+        <EditorIndex Value="6"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="887"/>
+        <CursorPos X="1" Y="903"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+        <DefaultSyntaxHighlighter Value="Delphi"/>
+      </Unit6>
+      <Unit7>
+        <Filename Value="../../lib/ssfpc.inc"/>
+        <EditorIndex Value="4"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="563"/>
+        <CursorPos X="1" Y="575"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+        <DefaultSyntaxHighlighter Value="Delphi"/>
+      </Unit7>
+    </Units>
+    <General>
+      <ActiveWindowIndexAtStart Value="0"/>
+    </General>
+    <JumpHistory Count="30" HistoryIndex="29">
+      <Position1>
+        <Filename Value="../../lib/blcksock.pas"/>
+        <Caret Line="2822" Column="1" TopLine="2808"/>
+      </Position1>
+      <Position2>
+        <Filename Value="../../lib/blcksock.pas"/>
+        <Caret Line="2823" Column="1" TopLine="2808"/>
+      </Position2>
+      <Position3>
+        <Filename Value="../../lib/blcksock.pas"/>
+        <Caret Line="2003" Column="1" TopLine="1991"/>
+      </Position3>
+      <Position4>
+        <Filename Value="../../lib/blcksock.pas"/>
+        <Caret Line="3101" Column="1" TopLine="3089"/>
+      </Position4>
+      <Position5>
+        <Filename Value="../../lib/blcksock.pas"/>
+        <Caret Line="3105" Column="1" TopLine="3089"/>
+      </Position5>
+      <Position6>
+        <Filename Value="../../lib/blcksock.pas"/>
+        <Caret Line="2004" Column="1" TopLine="1992"/>
+      </Position6>
+      <Position7>
+        <Filename Value="../../lib/blcksock.pas"/>
+        <Caret Line="2005" Column="1" TopLine="1992"/>
+      </Position7>
+      <Position8>
+        <Filename Value="../../lib/blcksock.pas"/>
+        <Caret Line="2011" Column="1" TopLine="1992"/>
+      </Position8>
+      <Position9>
+        <Filename Value="../../lib/blcksock.pas"/>
+        <Caret Line="2825" Column="1" TopLine="2813"/>
+      </Position9>
+      <Position10>
+        <Filename Value="../../lib/blcksock.pas"/>
+        <Caret Line="2826" Column="1" TopLine="2813"/>
+      </Position10>
+      <Position11>
+        <Filename Value="../../lib/blcksock.pas"/>
+        <Caret Line="2827" Column="1" TopLine="2813"/>
+      </Position11>
+      <Position12>
+        <Filename Value="../../lib/ssfpc.inc"/>
+        <Caret Line="574" Column="1" TopLine="562"/>
+      </Position12>
+      <Position13>
+        <Filename Value="../../lib/ssfpc.inc"/>
+        <Caret Line="511" Column="1" TopLine="499"/>
+      </Position13>
+      <Position14>
+        <Filename Value="../../lib/ssfpc.inc"/>
+        <Caret Line="513" Column="1" TopLine="499"/>
+      </Position14>
+      <Position15>
+        <Filename Value="../../lib/ssfpc.inc"/>
+        <Caret Line="519" Column="1" TopLine="499"/>
+      </Position15>
+      <Position16>
+        <Filename Value="../../lib/ssfpc.inc"/>
+        <Caret Line="575" Column="1" TopLine="563"/>
+      </Position16>
+      <Position17>
+        <Filename Value="../../lib/blcksock.pas"/>
+        <Caret Line="2828" Column="1" TopLine="2813"/>
+      </Position17>
+      <Position18>
+        <Filename Value="../../lib/blcksock.pas"/>
+        <Caret Line="2583" Column="1" TopLine="2571"/>
+      </Position18>
+      <Position19>
+        <Filename Value="../../lib/blcksock.pas"/>
+        <Caret Line="2584" Column="1" TopLine="2571"/>
+      </Position19>
+      <Position20>
+        <Filename Value="../../lib/blcksock.pas"/>
+        <Caret Line="2585" Column="1" TopLine="2571"/>
+      </Position20>
+      <Position21>
+        <Filename Value="../../lib/blcksock.pas"/>
+        <Caret Line="2590" Column="1" TopLine="2571"/>
+      </Position21>
+      <Position22>
+        <Filename Value="../../lib/blcksock.pas"/>
+        <Caret Line="2591" Column="1" TopLine="2571"/>
+      </Position22>
+      <Position23>
+        <Filename Value="../../lib/blcksock.pas"/>
+        <Caret Line="2829" Column="1" TopLine="2817"/>
+      </Position23>
+      <Position24>
+        <Filename Value="../../lib/blcksock.pas"/>
+        <Caret Line="2596" Column="1" TopLine="2584"/>
+      </Position24>
+      <Position25>
+        <Filename Value="../../lib/blcksock.pas"/>
+        <Caret Line="2597" Column="1" TopLine="2584"/>
+      </Position25>
+      <Position26>
+        <Filename Value="../../lib/blcksock.pas"/>
+        <Caret Line="2598" Column="1" TopLine="2584"/>
+      </Position26>
+      <Position27>
+        <Filename Value="../../lib/blcksock.pas"/>
+        <Caret Line="2611" Column="1" TopLine="2600"/>
+      </Position27>
+      <Position28>
+        <Filename Value="../../lib/blcksock.pas"/>
+        <Caret Line="2830" Column="1" TopLine="2817"/>
+      </Position28>
+      <Position29>
+        <Filename Value="../../lib/blcksock.pas"/>
+        <Caret Line="2831" Column="1" TopLine="2817"/>
+      </Position29>
+      <Position30>
+        <Filename Value="../../lib/blcksock.pas"/>
+        <Caret Line="2832" Column="1" TopLine="2817"/>
+      </Position30>
+    </JumpHistory>
+  </ProjectSession>
+  <Debugging>
+    <BreakPoints Count="2">
+      <Item1>
+        <Kind Value="bpkSource"/>
+        <WatchScope Value="wpsLocal"/>
+        <WatchKind Value="wpkWrite"/>
+        <Source Value="MainBox.pas"/>
+        <Line Value="73"/>
+      </Item1>
+      <Item2>
+        <Kind Value="bpkSource"/>
+        <WatchScope Value="wpsLocal"/>
+        <WatchKind Value="wpkWrite"/>
+        <Source Value="MainBox.pas"/>
+        <Line Value="62"/>
+      </Item2>
+    </BreakPoints>
+  </Debugging>
+  <EditorMacros Count="0"/>
+</CONFIG>

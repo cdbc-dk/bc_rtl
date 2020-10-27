@@ -1,0 +1,63 @@
+object MainForm: TMainForm
+  Left = 822
+  Height = 270
+  Top = 31
+  Width = 503
+  Caption = 'Simple TFTP-Server'
+  ClientHeight = 270
+  ClientWidth = 503
+  Color = clBtnFace
+  Font.Color = clWindowText
+  Font.Height = -14
+  Font.Name = 'MS Sans Serif'
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  LCLVersion = '2.0.4.0'
+  object Label1: TLabel
+    Left = 10
+    Height = 17
+    Top = 198
+    Width = 35
+    Anchors = [akLeft, akBottom]
+    Caption = 'Path:'
+    ParentColor = False
+  end
+  object Log: TMemo
+    Left = 8
+    Height = 186
+    Top = 0
+    Width = 481
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    ScrollBars = ssVertical
+    TabOrder = 0
+  end
+  object BExit: TButton
+    Left = 483
+    Height = 31
+    Top = 261
+    Width = 86
+    Anchors = [akBottom]
+    Caption = 'E&xit'
+    OnClick = BExitClick
+    TabOrder = 1
+  end
+  object BAbout: TButton
+    Left = 37
+    Height = 31
+    Top = 261
+    Width = 86
+    Anchors = [akBottom]
+    Caption = '&About'
+    OnClick = BAboutClick
+    TabOrder = 2
+  end
+  object PathEdit: TEdit
+    Left = 72
+    Height = 29
+    Top = 188
+    Width = 413
+    Anchors = [akLeft, akRight, akBottom]
+    TabOrder = 3
+    Text = '/home/bc/'
+  end
+end

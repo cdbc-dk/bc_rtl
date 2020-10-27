@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <ProjectSession>
+    <Version Value="11"/>
+    <BuildModes Active="Default"/>
+    <Units Count="8">
+      <Unit0>
+        <Filename Value="TFTPClient.lpr"/>
+        <IsPartOfProject Value="True"/>
+        <CursorPos X="39" Y="9"/>
+        <UsageCount Value="22"/>
+        <Loaded Value="True"/>
+        <DefaultSyntaxHighlighter Value="Delphi"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="MainBox.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="Form1"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="1"/>
+        <TopLine Value="55"/>
+        <CursorPos Y="62"/>
+        <UsageCount Value="22"/>
+        <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
+        <DefaultSyntaxHighlighter Value="Delphi"/>
+      </Unit1>
+      <Unit2>
+        <Filename Value="../TFTPServer/ConverterBackup/ftptsend.pas"/>
+        <IsPartOfProject Value="True"/>
+        <EditorIndex Value="2"/>
+        <TopLine Value="150"/>
+        <CursorPos Y="167"/>
+        <UsageCount Value="22"/>
+        <Loaded Value="True"/>
+        <DefaultSyntaxHighlighter Value="Delphi"/>
+      </Unit2>
+      <Unit3>
+        <Filename Value="../../lib/blcksock.pas"/>
+        <EditorIndex Value="3"/>
+        <TopLine Value="3569"/>
+        <CursorPos Y="3569"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+        <DefaultSyntaxHighlighter Value="Delphi"/>
+      </Unit3>
+      <Unit4>
+        <Filename Value="/usr/lib/lazarus/lcl/include/control.inc"/>
+        <TopLine Value="3250"/>
+        <CursorPos Y="3269"/>
+        <UsageCount Value="10"/>
+      </Unit4>
+      <Unit5>
+        <Filename Value="../../lib/synaip.pas"/>
+        <TopLine Value="121"/>
+        <CursorPos Y="138"/>
+        <UsageCount Value="10"/>
+        <DefaultSyntaxHighlighter Value="Delphi"/>
+      </Unit5>
+      <Unit6>
+        <Filename Value="../../lib/synautil.pas"/>
+        <TopLine Value="1404"/>
+        <CursorPos Y="1418"/>
+        <UsageCount Value="10"/>
+        <DefaultSyntaxHighlighter Value="Delphi"/>
+      </Unit6>
+      <Unit7>
+        <Filename Value="../../lib/ssfpc.inc"/>
+        <TopLine Value="884"/>
+        <CursorPos Y="575"/>
+        <UsageCount Value="10"/>
+        <DefaultSyntaxHighlighter Value="Delphi"/>
+      </Unit7>
+    </Units>
+    <JumpHistory Count="30" HistoryIndex="29">
+      <Position1>
+        <Filename Value="../../lib/blcksock.pas"/>
+        <Caret Line="3708" TopLine="3696"/>
+      </Position1>
+      <Position2>
+        <Filename Value="../../lib/blcksock.pas"/>
+        <Caret Line="3709" TopLine="3696"/>
+      </Position2>
+      <Position3>
+        <Filename Value="../../lib/blcksock.pas"/>
+        <Caret Line="1852" TopLine="1840"/>
+      </Position3>
+      <Position4>
+        <Filename Value="../../lib/blcksock.pas"/>
+        <Caret Line="1855" TopLine="1840"/>
+      </Position4>
+      <Position5>
+        <Filename Value="../../lib/blcksock.pas"/>
+        <Caret Line="1856" TopLine="1840"/>
+      </Position5>
+      <Position6>
+        <Filename Value="../../lib/blcksock.pas"/>
+        <Caret Line="1858" TopLine="1840"/>
+      </Position6>
+      <Position7>
+        <Filename Value="../../lib/blcksock.pas"/>
+        <Caret Line="1859" TopLine="1840"/>
+      </Position7>
+      <Position8>
+        <Filename Value="../../lib/blcksock.pas"/>
+        <Caret Line="1862" TopLine="1843"/>
+      </Position8>
+      <Position9>
+        <Filename Value="../../lib/blcksock.pas"/>
+        <Caret Line="1863" TopLine="1843"/>
+      </Position9>
+      <Position10>
+        <Filename Value="../../lib/blcksock.pas"/>
+        <Caret Line="1864" TopLine="1844"/>
+      </Position10>
+      <Position11>
+        <Filename Value="../../lib/blcksock.pas"/>
+        <Caret Line="1866" TopLine="1846"/>
+      </Position11>
+      <Position12>
+        <Filename Value="../../lib/blcksock.pas"/>
+        <Caret Line="3495" TopLine="3482"/>
+      </Position12>
+      <Position13>
+        <Filename Value="../../lib/blcksock.pas"/>
+        <Caret Line="3496" TopLine="3482"/>
+      </Position13>
+      <Position14>
+        <Filename Value="../../lib/blcksock.pas"/>
+        <Caret Line="3497" TopLine="3482"/>
+      </Position14>
+      <Position15>
+        <Filename Value="../TFTPServer/ConverterBackup/ftptsend.pas"/>
+        <Caret Line="233" TopLine="215"/>
+      </Position15>
+      <Position16>
+        <Filename Value="../TFTPServer/ConverterBackup/ftptsend.pas"/>
+        <Caret Line="234" TopLine="215"/>
+      </Position16>
+      <Position17>
+        <Filename Value="../TFTPServer/ConverterBackup/ftptsend.pas"/>
+        <Caret Line="236" TopLine="216"/>
+      </Position17>
+      <Position18>
+        <Filename Value="../TFTPServer/ConverterBackup/ftptsend.pas"/>
+        <Caret Line="237" TopLine="217"/>
+      </Position18>
+      <Position19>
+        <Filename Value="../TFTPServer/ConverterBackup/ftptsend.pas"/>
+        <Caret Line="159" TopLine="147"/>
+      </Position19>
+      <Position20>
+        <Filename Value="../TFTPServer/ConverterBackup/ftptsend.pas"/>
+        <Caret Line="160" TopLine="147"/>
+      </Position20>
+      <Position21>
+        <Filename Value="../TFTPServer/ConverterBackup/ftptsend.pas"/>
+        <Caret Line="161" TopLine="147"/>
+      </Position21>
+      <Position22>
+        <Filename Value="../TFTPServer/ConverterBackup/ftptsend.pas"/>
+        <Caret Line="162" TopLine="147"/>
+      </Position22>
+      <Position23>
+        <Filename Value="../TFTPServer/ConverterBackup/ftptsend.pas"/>
+        <Caret Line="163" TopLine="147"/>
+      </Position23>
+      <Position24>
+        <Filename Value="../TFTPServer/ConverterBackup/ftptsend.pas"/>
+        <Caret Line="166" TopLine="147"/>
+      </Position24>
+      <Position25>
+        <Filename Value="../TFTPServer/ConverterBackup/ftptsend.pas"/>
+        <Caret Line="167" TopLine="147"/>
+      </Position25>
+      <Position26>
+        <Filename Value="../../lib/blcksock.pas"/>
+        <Caret Line="2084" TopLine="2072"/>
+      </Position26>
+      <Position27>
+        <Filename Value="../../lib/blcksock.pas"/>
+        <Caret Line="2088" TopLine="2072"/>
+      </Position27>
+      <Position28>
+        <Filename Value="../../lib/blcksock.pas"/>
+        <Caret Line="2090" TopLine="2072"/>
+      </Position28>
+      <Position29>
+        <Filename Value="../../lib/blcksock.pas"/>
+        <Caret Line="3506" TopLine="3494"/>
+      </Position29>
+      <Position30>
+        <Filename Value="MainBox.pas"/>
+        <Caret Line="74" TopLine="37"/>
+      </Position30>
+    </JumpHistory>
+    <RunParams>
+      <FormatVersion Value="2"/>
+      <Modes Count="0" ActiveMode="default"/>
+    </RunParams>
+  </ProjectSession>
+  <Debugging>
+    <BreakPoints Count="1">
+      <Item1>
+        <Kind Value="bpkSource"/>
+        <WatchScope Value="wpsLocal"/>
+        <WatchKind Value="wpkWrite"/>
+        <Source Value="MainBox.pas"/>
+        <Line Value="62"/>
+      </Item1>
+    </BreakPoints>
+  </Debugging>
+</CONFIG>
