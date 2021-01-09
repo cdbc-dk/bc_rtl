@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <Compiler Value="/usr/bin/fpc" Date="1603540176"/>
+  <Params Value=" -MObjFPC -Scghi -Cg -O1 -g -gl -l -vewnhibq -Fi/home/sh/src/bc_rtl/lib/x86_64-linux -Fu/home/sh/src/bc_rtl/rackctrls/lib/x86_64-linux -Fu/usr/lib64/lazarus/components/ideintf/units/x86_64-linux/gtk2 -Fu/usr/lib64/lazarus/components/lazcontrols/lib/x86_64-linux/gtk2 -Fu/usr/lib64/lazarus/lcl/units/x86_64-linux/gtk2 -Fu/usr/lib64/lazarus/lcl/units/x86_64-linux -Fu/usr/lib64/lazarus/components/lazutils/lib/x86_64-linux -Fu/usr/lib64/lazarus/packager/units/x86_64-linux -Fu/home/sh/src/bc_rtl/ -FU/home/sh/src/bc_rtl/lib/x86_64-linux/ -FE/home/sh/src/bc_rtl/ -o/home/sh/src/bc_rtl/bcfilesearcher -dLCL -dLCLgtk2 bcfilesearcher.lpr"/>
+</CONFIG>

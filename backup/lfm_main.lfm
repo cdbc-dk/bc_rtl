@@ -1,0 +1,124 @@
+object frmMain: TfrmMain
+  Left = 423
+  Height = 379
+  Top = 306
+  Width = 905
+  BorderStyle = bsDialog
+  Caption = 'bcFileSearcher'
+  ClientHeight = 379
+  ClientWidth = 905
+  Color = clBtnFace
+  KeyPreview = True
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  Position = poScreenCenter
+  LCLVersion = '2.0.10.0'
+  object stbMain: TStatusBar
+    Left = 0
+    Height = 19
+    Top = 360
+    Width = 905
+    Panels = <>
+    SimplePanel = False
+  end
+  object gbxOptions: TGroupBox
+    Left = 8
+    Height = 61
+    Top = 8
+    Width = 888
+    Caption = ' Search Options '
+    ClientHeight = 43
+    ClientWidth = 886
+    Color = clBtnFace
+    ParentColor = False
+    TabOrder = 1
+    object lblDirectory: TLabel
+      Left = 8
+      Height = 17
+      Top = 8
+      Width = 104
+      Caption = 'Start directory:'
+      ParentColor = False
+    end
+    object edtDirectory: TEdit
+      Left = 120
+      Height = 34
+      Top = 0
+      Width = 201
+      TabOrder = 0
+      Text = '/home/sh/'
+    end
+    object btnBrowseDir: TButton
+      Left = 320
+      Height = 34
+      Hint = 'Browse Directory...'
+      Top = 0
+      Width = 25
+      Caption = '...'
+      Font.Style = [fsBold]
+      OnClick = btnBrowseDirClick
+      ParentFont = False
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 1
+    end
+    object lblPattern: TLabel
+      Left = 360
+      Height = 17
+      Top = 8
+      Width = 106
+      Caption = 'Search Pattern:'
+      Color = clBtnFace
+      ParentColor = False
+      Transparent = False
+    end
+    object edtPattern: TEdit
+      Left = 472
+      Height = 34
+      Top = 0
+      Width = 311
+      TabOrder = 2
+      Text = '*.pas;*.pp;*.p;*.inc'
+    end
+    object btnSearch: TBitBtn
+      Left = 784
+      Height = 34
+      Top = 0
+      Width = 104
+      Caption = '&Search'
+      Default = True
+      Kind = bkOK
+      ModalResult = 1
+      OnClick = btnSearchClick
+      TabOrder = 3
+    end
+  end
+  object gbxResults: TGroupBox
+    Left = 0
+    Height = 288
+    Top = 72
+    Width = 905
+    Align = alBottom
+    Caption = ' Search Results '
+    ClientHeight = 270
+    ClientWidth = 903
+    TabOrder = 2
+    object memResults: TMemo
+      Left = 0
+      Height = 270
+      Top = 0
+      Width = 903
+      Align = alClient
+      Color = clBlack
+      Font.Color = clYellow
+      Font.Height = -19
+      ParentFont = False
+      TabOrder = 0
+    end
+  end
+  object SelectDirectoryDialog1: TSelectDirectoryDialog
+    InitialDir = '/home/sh/'
+    Left = 80
+    Top = 16
+  end
+end
