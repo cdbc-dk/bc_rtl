@@ -1,24 +1,33 @@
 
-                   {**************************************$
-                   $  Unit name : bc_datetime.pas         $
-                   $  Copyright : cdbc.dk(C)              $
-                   $  Programmer: Benny Christensen       $
-                   $  Created   : 2006.05.03 /bc          $
-                   $  Updated   : 2014.01.06 /bc          $
-                   $            : 2020.03.26 /bc          $
-                   $            : 2020.03.30 /bc          $
-                   $            : 2020.04.28 /bc          $
-                   $            : 2020.05.01 /bc          $
-                   $ ************************************ $
-                   $  Purpose   :                         $
-                   $  One date interface / class, which   $
-                   $  implements ISO weeknumber           $
-                   $  calculations, as well as some       $
-                   $  service functionality.              $
-                   $  One time interface / class.         $
-                   $  One IISoDateTime interface / class  $
-                   $  TODO: implement week-stuff          $
-                   $**************************************}
+{*************************************************************************$
+$          Unit name : bc_datetime.pas                                    $
+$          Copyright : cdbc.dk(C) 2006 - 2021                             $
+$          Programmer: Benny Christensen                                  $
+$          Created   : 2006.05.03 /bc                                     $
+$          Updated   : 2014.01.06 /bc                                     $
+$                    : 2020.03.26 /bc                                     $
+$                    : 2020.03.30 /bc                                     $
+$                    : 2020.04.28 /bc                                     $
+$                    : 2020.05.01 /bc implemented utility functions       $
+$                    : 2021.02.12 /bc implemented day,month,year-asstring $
+$                                                                         $
+$                                                                         $
+$                                                                         $
+$                                                                         $
+$************************************************************************ $
+$          Purpose   :                                                    $
+$          One date interface / class, which                              $
+$          implements ISO weeknumber                                      $
+$          calculations, as well as some                                  $
+$          service functionality.                                         $
+$          One time interface / class.                                    $
+$          One IISoDateTime interface / class                             $
+$          TODO: implement week-stuff                                     $
+$*************************************************************************$
+$          Licence   :                                                    $
+$          "Beer License" - If you meet me one day, you buy me a beer :-) $
+$          I'm NOT liable for anything! Use at your own risk!!!           $
+$*************************************************************************}
 
 unit bc_datetime;
 interface
@@ -27,7 +36,7 @@ uses
 
 const
   { version control - see bcDateTime.log for details }
-  UnitVersion = '8.01.05.2020';
+  UnitVersion = '9.12.02.2021';
   { Danish day and month names }
   DayNames: array[1..7]of string = ('Mandag',
                                     'Tirsdag',
@@ -147,11 +156,15 @@ type
     fIsoWeekOneStartDate,fDate: TDateTime;
     function Get_Date: TDateTime;
     function Get_Day: word;
+    function get_DayAsString: string;
     function Get_DayNumber: word;
     function Get_IsoWeekNumber: word;
+    function get_WeekNumberAsString: string;
     function Get_IsoYear: word;
     function Get_Month: word;
+    function get_MonthAsString: string;
     function Get_Year: word;
+    function get_YearAsString: string;
     function GetAsInteger: ptrint;
     function GetAsString: string;
     function GetDayNumber(aDateTime: TDateTime): word;
@@ -160,9 +173,9 @@ type
     function GetIsoWeek(aDateTime: TDateTime): word;
     function GetMonthName: string;
     function CompareTo(const aDate:IIsoDate;Descending: boolean): ptrint;    
-    procedure SetAsInteger(const AValue: ptrint);
-    procedure SetAsString(const aValue: string);
-    procedure Set_Date(const Value: TDateTime);
+    procedure setAsInteger(const AValue: ptrint);
+    procedure setAsString(const aValue: string);
+    procedure set_Date(const Value: TDateTime);
   public
     constructor Create(aDay,aMonth,aYear: word); overload;
     constructor Create(aDate: TDateTime); overload;
@@ -170,13 +183,17 @@ type
     constructor Create(aDateStr: string); overload; { 05.01.2014 /bc }
     destructor Destroy; override;
     property Day: word read Get_Day;
+    property DayAsString: string read get_DayAsString;
     property Month: word read Get_Month;
+    property MonthAsString: string read get_MonthAsString;
     property Year: word read Get_Year;
+    property YearAsString: string read get_YearAsString;
     property DayNumber: word read Get_DayNumber;
     property DayName: string read GetDayName;
     property MonthName: string read GetMonthName;
     property ISOYear: word read Get_IsoYear;
     property ISOWeekNumber: word read Get_IsoWeekNumber;
+    property WeekNumberAsString: string read get_WeekNumberAsString;
     property Date: TDateTime read Get_Date write Set_Date; deprecated;
     property AsDate: TDateTime read Get_Date write Set_Date;    
     property AsInteger: ptrint read GetAsInteger write SetAsInteger;
@@ -192,7 +209,8 @@ type
     function get_Time: IIsoTime;
     function get_AsString: string;                     { ææ 28.04.2020 /bc }
   public
-    constructor Create; { defaults to "now" }
+    constructor Create; overload; { defaults to "now" }
+    constructor Create(const aDateTime: TDateTime); overload;
     destructor Destroy; override;
     procedure SetDateTime(const aDateTime: TDateTime); { ææ 28.04.2020 /bc }
     property Date: IIsoDate read get_Date;
@@ -209,6 +227,7 @@ function bcDateStrToWeekno(const aDateStr: string): ptrint;
 function bcDateToInt(const aDate: TDateTime): ptrint; { 01.05.2020 /bc }
 function bcIntTimeToStr(const aTime: ptrint): string;
 function bcTimeToStr(const aTime: TDateTime): string; { 01.05.2020 /bc }
+function bcDateTimeToStr(const aDateTime: TDateTime): string; { 18.02.2021 /bc }
 
 implementation
 
@@ -276,6 +295,14 @@ begin
   I:= nil;
 end;
 
+function bcDateTimeToStr(const aDateTime: TDateTime): string;
+var I: IIsoDateTime;
+begin
+  I:= TIsoDateTime.Create(aDateTime);
+  Result:= I.AsString;
+  I:= nil;
+end;
+
 { *** TIsoDateTime *** }
 function TIsoDateTime.get_Date: IIsoDate;
 begin
@@ -297,6 +324,13 @@ begin
   inherited Create;
   fDate:= TIsoDate.Create(now);
   fTime:= TIsoTime.Create(now);
+end;
+
+constructor TIsoDateTime.Create(const aDateTime: TDateTime);
+begin
+  inherited Create;
+  fDate:= TIsoDate.Create(aDateTime);
+  fTime:= TIsoTime.Create(aDateTime);
 end;
 
 destructor TIsoDateTime.Destroy;
@@ -404,6 +438,11 @@ begin
   Result:= word(fDay);
 end;
 
+function TIsoDate.get_DayAsString: string;
+begin
+  Result:= fDay.ToString;
+end;
+
 function TIsoDate.Get_DayNumber: word;
 begin
   Result:= fDayNumber;
@@ -412,6 +451,11 @@ end;
 function TIsoDate.Get_IsoWeekNumber: word;
 begin
   Result:= fIsoWeekNumber;
+end;
+
+function TIsoDate.get_WeekNumberAsString: string;
+begin
+  Result:= fIsoWeekNumber.ToString;
 end;
 
 function TIsoDate.Get_IsoYear: word;
@@ -424,9 +468,19 @@ begin
   Result:= word(fMonth);
 end;
 
+function TIsoDate.get_MonthAsString: string;
+begin
+  Result:= fMonth.ToString;
+end;
+
 function TIsoDate.Get_Year: word;
 begin
   Result:= word(fYear);
+end;
+
+function TIsoDate.get_YearAsString: string;
+begin
+  Result:= fYear.ToString;
 end;
 
 function TIsoDate.GetDayName: string;
@@ -520,7 +574,7 @@ end;
   {            M = Rem div 256; D = Rem mod 256; }
 {------------------ date calculations ----- 13.02.2007 / bc -------------------}
 
-procedure TIsoDate.SetAsInteger(const AValue: ptrint);
+procedure TIsoDate.setAsInteger(const AValue: ptrint);
 var
   Rem: ptrint; // remainder
 begin
@@ -537,14 +591,14 @@ begin
   GetIsoWeek(fDate);                           { 9. last calculate actual weeknumber }
 end;
 
-procedure TIsoDate.SetAsString(const aValue: string);
+procedure TIsoDate.setAsString(const aValue: string);
 var D: TDateTime;
 begin
   D:= StrToDate(aValue,'.');
   Set_Date(D);
 end;
 
-procedure TIsoDate.Set_Date(const Value: TDateTime);
+procedure TIsoDate.set_Date(const Value: TDateTime);
 begin
   if Value <> fDate then begin
     fDate:= Value;

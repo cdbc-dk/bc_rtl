@@ -46,6 +46,7 @@
       <Unit2>
         <Filename Value="echo.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="Echo"/>
       </Unit2>
     </Units>
   </ProjectOptions>

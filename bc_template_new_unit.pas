@@ -1,18 +1,18 @@
 
 {------------------------------------------------------------------------------|
-| Project name: Daily Diary                                                    |
+| Project name: Debug Server                                                   |
 | Unit name   : lfm_main.pas                                                   |
-| Copyright   : (c) 2020 cdbc.dk                                               |
+| Copyright   : (c) 2021 cdbc.dk                                               |
 | Programmer  : Benny Christensen /bc                                          |
-| Created     : 2020.09.28 /bc initial design and coding,(kind of MVC pattern) |
-| Updated     : 2020.09.28 /bc Setting up environment, structure and vision    |
+| Created     : 2021.01.13 /bc initial design and coding                       |
+| Updated     : 2020.01.13 /bc Setting up environment, structure and vision    |
 |                                                                              |
 |                                                                              |
 |                                                                              |
 |                                                                              |
 |------------------------------------------------------------------------------|
 | Abstract:                                                                    |
-|   Make an application to help with remembering what happened that day        |
+|   A debug server to connect to while running a live application.             |
 |                                                                              |
 |                                                                              |
 |                                                                              |

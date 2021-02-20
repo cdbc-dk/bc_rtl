@@ -1,0 +1,8 @@
+object frmClient: TfrmClient
+  Left = 280
+  Height = 389
+  Top = 131
+  Width = 755
+  Caption = 'frmClient'
+  LCLVersion = '2.0.10.0'
+end

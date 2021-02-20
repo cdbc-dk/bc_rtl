@@ -1,0 +1,32 @@
+
+{*************************************************************************$
+$          Unit name : bc_datetime.pas                                    $
+$          Copyright : cdbc.dk(C) 2006 - 2021                             $
+$          Programmer: Benny Christensen                                  $
+$          Created   : 2006.05.03 /bc                                     $
+$          Updated   : 2014.01.06 /bc                                     $
+$                    : 2020.03.26 /bc                                     $
+$                    : 2020.03.30 /bc                                     $
+$                    : 2020.04.28 /bc                                     $
+$                    : 2020.05.01 /bc implemented utility functions       $
+$                    : 2021.02.12 /bc implemented day,month,year-asstring $
+$                                                                         $
+$                                                                         $
+$                                                                         $
+$                                                                         $
+$************************************************************************ $
+$          Purpose   :                                                    $
+$          One date interface / class, which                              $
+$          implements ISO weeknumber                                      $
+$          calculations, as well as some                                  $
+$          service functionality.                                         $
+$          One time interface / class.                                    $
+$          One IISoDateTime interface / class                             $
+$          TODO: implement week-stuff                                     $
+$*************************************************************************$
+$          Licence   :                                                    $
+$          "Beer License" - If you meet me one day, you buy me a beer :-) $
+$          I'm NOT liable for anything! Use at your own risk!!!           $
+$*************************************************************************}
+
+

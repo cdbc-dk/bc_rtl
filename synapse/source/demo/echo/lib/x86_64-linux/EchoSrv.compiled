@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
-  <Compiler Value="/usr/bin/fpc" Date="1569302157"/>
-  <Params Value=" -MDelphi -Scghi -Cg -O1 -g -gl -l -vewnhibq -Fi/home/bc/src/library_2020/synapse/source/demo/echo/lib/x86_64-linux -Fu/home/bc/src/library_2020/synapse/source/lib -Fu/usr/lib64/lazarus/lcl/units/x86_64-linux/gtk2 -Fu/usr/lib64/lazarus/lcl/units/x86_64-linux -Fu/usr/lib64/lazarus/components/lazutils/lib/x86_64-linux -Fu/usr/lib64/lazarus/packager/units/x86_64-linux -Fu/home/bc/src/library_2020/synapse/source/demo/echo/ -FE/home/bc/src/library_2020/synapse/source/demo/echo/lib/x86_64-linux/ -o/home/bc/src/library_2020/synapse/source/demo/echo/lib/x86_64-linux/EchoSrv -dLCL -dLCLgtk2 -dBorland -dVer150 -dDelphi7 -dCompiler6_Up -dPUREPASCAL EchoSrv.lpr"/>
+  <Compiler Value="/usr/bin/fpc" Date="1603540176"/>
+  <Params Value=" -MDelphi -Scghi -Cg -O1 -g -gl -l -vewnhibq -Fi/home/bc/src/bc_rtl/synapse/source/demo/echo/lib/x86_64-linux -Fu/home/bc/src/bc_rtl/synapse/source/lib -Fu/usr/lib64/lazarus/lcl/units/x86_64-linux/gtk2 -Fu/usr/lib64/lazarus/lcl/units/x86_64-linux -Fu/usr/lib64/lazarus/components/lazutils/lib/x86_64-linux -Fu/usr/lib64/lazarus/packager/units/x86_64-linux -Fu/home/bc/src/bc_rtl/synapse/source/demo/echo/ -FE/home/bc/src/bc_rtl/synapse/source/demo/echo/lib/x86_64-linux/ -o/home/bc/src/bc_rtl/synapse/source/demo/echo/lib/x86_64-linux/EchoSrv -dLCL -dLCLgtk2 -dBorland -dVer150 -dDelphi7 -dCompiler6_Up -dPUREPASCAL EchoSrv.lpr"/>
 </CONFIG>

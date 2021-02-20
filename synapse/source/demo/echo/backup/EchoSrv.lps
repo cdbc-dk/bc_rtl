@@ -19,7 +19,8 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <IsVisibleTab Value="True"/>
-        <CursorPos X="14" Y="9"/>
+        <TopLine Value="80"/>
+        <CursorPos X="52" Y="84"/>
         <UsageCount Value="93"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
@@ -30,8 +31,8 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="Echo"/>
         <EditorIndex Value="1"/>
-        <TopLine Value="16"/>
-        <CursorPos X="47" Y="39"/>
+        <TopLine Value="31"/>
+        <CursorPos X="26" Y="3"/>
         <UsageCount Value="93"/>
         <Loaded Value="True"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
@@ -144,7 +145,7 @@
         <UsageCount Value="3"/>
       </Unit17>
     </Units>
-    <JumpHistory Count="24" HistoryIndex="23">
+    <JumpHistory Count="25" HistoryIndex="20">
       <Position1>
         <Filename Value="echo.pas"/>
         <Caret Line="68" Column="45" TopLine="54"/>
@@ -241,6 +242,10 @@
         <Filename Value="echo.pas"/>
         <Caret Line="127" Column="41" TopLine="115"/>
       </Position24>
+      <Position25>
+        <Filename Value="main.pas"/>
+        <Caret Line="52" Column="50"/>
+      </Position25>
     </JumpHistory>
     <RunParams>
       <FormatVersion Value="2"/>

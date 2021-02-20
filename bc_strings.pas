@@ -55,7 +55,8 @@ type
 
 { factory creates a singleton }
 function StringWorkshop: IStringWorkshop;
-
+{ utility functions }
+function bcGetFieldToken(const FieldNo: ptrint;const S: string;const Separator: char): string;
 function StrCase(const S: string;Elements: array of string): ptrint;
 function Str2Bool(const S: string): boolean;
 
@@ -296,6 +297,17 @@ begin
   Result:= S_Workshop;
 end;
 
+function bcGetFieldToken(const FieldNo: ptrint;
+                         const S: string;
+                         const Separator: char): string;
+var
+  lGFT: TStringWorkshop;
+begin
+  lGFT:= TStringWorkshop.Create;
+  try
+    Result:= lGFT.GetFieldToken(FieldNo,S,Separator);
+  finally FreeAndNil(lGFT); end;
+end;
 
 (* StrCase usage....
   case StrCase(S,['+date','+hello','+data','+quit']) of
@@ -304,10 +316,12 @@ end;
     ...
   end;
 *)
+{ strcase is zero-based }
 function StrCase(const S: string;Elements: array of string): ptrint;
 var Idx: ptrint;
 begin
-  Result:= -1;
+  Result:= -1; { hence the result ~ ptrint }
+  { perform a linear search }
   for Idx:= low(Elements) to high(Elements) do if S = Elements[Idx] then begin
     Result:= Idx;
     break;
@@ -329,6 +343,7 @@ end;
 initialization
   S_Workshop:= nil;
 finalization
+//  FreeAndNil(S_Workshop); { for corba interfaces }
   S_Workshop:= nil;
 
 end.

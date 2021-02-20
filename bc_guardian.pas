@@ -36,10 +36,11 @@ uses
   {$endif}
 
 const
-  UnitVersion = '2.19.09.2020';
+  UnitVersion = '3.02.02.2021';
   SGUIDGuardian = '{344C70E4-E6F8-4CDA-BDBE-682A511975D1}';
 
 type
+  {$interfaces corba}  
   IGuardian = interface [SGUIDGuardian]
     procedure Lock;   // api
     procedure UnLock; // api
