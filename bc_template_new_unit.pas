@@ -1,23 +1,33 @@
 
-{------------------------------------------------------------------------------|
-| Project name: Debug Server                                                   |
-| Unit name   : lfm_main.pas                                                   |
-| Copyright   : (c) 2021 cdbc.dk                                               |
-| Programmer  : Benny Christensen /bc                                          |
-| Created     : 2021.01.13 /bc initial design and coding                       |
-| Updated     : 2020.01.13 /bc Setting up environment, structure and vision    |
-|                                                                              |
-|                                                                              |
-|                                                                              |
-|                                                                              |
-|------------------------------------------------------------------------------|
-| Abstract:                                                                    |
-|   A debug server to connect to while running a live application.             |
-|                                                                              |
-|                                                                              |
-|                                                                              |
-|                                                                              |
--------------------------------------------------------------------------------}
+{**************************************************************************$
+$        Unit name : u_treeview.pas                                        $
+$        Copyright : (C)cdbc.dk 2021                                       $
+$        Programmer: Benny Christensen                                     $
+$        Created   : 2021.02.23 /bc helper for dealing with ttreeview      $
+$        Updated   : 2021.02.23 /bc                                        $
+$                                                                          $
+$                                                                          $
+$                                                                          $
+$                                                                          $
+$                                                                          $
+$                                                                          $
+$                                                                          $
+$                                                                          $
+$                                                                          $
+$**************************************************************************$
+$        Purpose   :                                                       $
+$        One date interface / class, which                                 $
+$        implements ISO weeknumber                                         $
+$        calculations, as well as some                                     $
+$        service functionality.                                            $
+$        One time interface / class.                                       $
+$        One IISoDateTime interface / class                                $
+$        TODO: implement week-stuff                                        $
+$**************************************************************************$
+$        License   :                                                       $
+$        "Beer License" - If you meet me one day, you'll buy me a beer :-) $
+$        I'm NOT liable for anything! Use at your own risk!!!              $
+$**************************************************************************}
 
 unit template_new_unit;
 {$mode objfpc}{$H+}
