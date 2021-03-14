@@ -1,11 +1,11 @@
 
 {**************************************************************************$
-$        Unit name : u_treeview.pas                                        $
+$        Unit name : bc_unit_license_header.txt                            $
 $        Copyright : (C)cdbc.dk 2021                                       $
 $        Programmer: Benny Christensen                                     $
 $        Created   : 2021.02.23 /bc helper for dealing with ttreeview      $
-$        Updated   : 2021.02.23 /bc                                        $
-$                                                                          $
+$        Updated   : 2021.02.23 /bc added timezone support in bc_datetime  $
+$                  : 2021.03.14 /bc corrected timezone/midnight dumb error $
 $                                                                          $
 $                                                                          $
 $                                                                          $
@@ -15,14 +15,14 @@ $                                                                          $
 $                                                                          $
 $                                                                          $
 $**************************************************************************$
-$        Purpose   :                                                       $
-$        One date interface / class, which                                 $
-$        implements ISO weeknumber                                         $
-$        calculations, as well as some                                     $
-$        service functionality.                                            $
-$        One time interface / class.                                       $
-$        One IISoDateTime interface / class                                $
-$        TODO: implement week-stuff                                        $
+$        Purpose   : A general license for my bc_rtl                       $
+$                                                                          $
+$                                                                          $
+$                                                                          $
+$                                                                          $
+$                                                                          $
+$                                                                          $
+$                                                                          $
 $**************************************************************************$
 $        License   :                                                       $
 $        "Beer License" - If you meet me one day, you'll buy me a beer :-) $

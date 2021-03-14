@@ -72,6 +72,7 @@ begin
     M:= L div 60;
     S:= L mod 60;
     H:= H + fTimezone; { 28.02.2021 /bc }
+    if H = 24 then H:= 0; { 09.03.2021 /bc }
     fTime:= EncodeTime(H,M,S,0);
   end;
 end;
@@ -84,6 +85,7 @@ begin
     H:= 0; M:= 0; S:= 0; Dummy:= 0;
     DecodeTime(aValue,H,M,S,Dummy);
     H:= H + fTimezone; { 28.02.2021 /bc }
+    if H = 24 then H:= 0; { 09.03.2021 /bc }
     fIntTime:= ((H*3600)+(M*60)+S);
     fTime:= EncodeTime(H,M,S,0);
 //    fTime:= aValue
@@ -96,6 +98,7 @@ begin
   inherited Create;
   fTimezone:= aTimezone; { 28.02.2021 /bc }
   aHours:= aHours + fTimezone; { 28.02.2021 /bc }
+  if aHours = 24 then aHours:= 0; { 09.03.2021 /bc }
   fIntTime:= ((aHours*3600)+(aMinutes*60)+aSeconds);
   fTime:= EncodeTime(aHours,aMinutes,aSeconds,0);
 end;

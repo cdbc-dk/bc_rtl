@@ -12,6 +12,7 @@ $                    : 2020.05.01 /bc implemented utility functions       $
 $                    : 2021.02.12 /bc implemented day,month,year-asstring $
 $                    : 2021.02.28 /bc implemented timezone                $
 $                    : 2021.03.01 /bc refactored to include files         $
+$                    : 2021.03.09 /bc correction for midnight/timezone    $
 $                                                                         $
 $                                                                         $
 $************************************************************************ $
@@ -36,7 +37,7 @@ uses
 
 const
   { version control - see bcDateTime.log for details }
-  UnitVersion = '10.01.03.2021';
+  UnitVersion = '10.09.03.2021';
   { Danish day and month names }
   DayNames: array[1..7]of string = ('Mandag',
                                     'Tirsdag',
@@ -235,7 +236,7 @@ function bcTimeToStr(const aTime: TDateTime): string; { 01.05.2020 /bc }
 function bcDateTimeToStr(const aDateTime: TDateTime): string; { 18.02.2021 /bc }
 
 implementation
-
+{ refactured 01.03.2021 /bc }
 {$i iso_date.inc}       { moved the implementation part to an include-file }
 {$i iso_time.inc}       { moved the implementation part to an include-file }
 {$i iso_date_time.inc}  { moved the implementation part to an include-file }
