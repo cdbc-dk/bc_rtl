@@ -1,13 +1,13 @@
 
 {*******************************************************************************
 * Unit name : bc_guardian.pas                                                  *
-* Copyright : (c) 2020 - 2021 cdbc.dk                                          *
+* Copyright : (c) 2020 cdbc.dk                                                 *
 * Programmer: Benny Christensen /bc                                            *
 * Created   : 2020.04.13 /bc                                                   *
 * Updated   : 2020.04.17 /bc: const SGUIDGuardian                              *
 *           : 2020.09.19 /bc: removed debug-state & forked to bc_guardian_dbg  *
 *                        /bc: reduced IGuardian                                *
-*           : 2021.04.13 /bc: changed IGuardian interface to corba             *
+*                                                                              *
 *                                                                              *
 *                                                                              *
 ********************************************************************************
@@ -36,11 +36,10 @@ uses
   {$endif}
 
 const
-  UnitVersion = '4.13.04.2021';
+  UnitVersion = '3.02.02.2021';
   SGUIDGuardian = '{344C70E4-E6F8-4CDA-BDBE-682A511975D1}';
 
 type
-  { corba interfaces do not ref count, i.e: you free them yourself! }
   {$interfaces corba}  
   IGuardian = interface [SGUIDGuardian]
     procedure Lock;   // api
@@ -48,7 +47,7 @@ type
   end; { IGuardian }
 
   { TGuardian is a global, that provides locking for threads }
-  TGuardian = class(TObject,IGuardian)
+  TGuardian = class(TInterfacedObject,IGuardian)
   private
     fVersion: TVersion;
     fId: ptrint;
@@ -69,7 +68,7 @@ type
     property Id: ptrint read getId write setId;
     property Version: TVersion read getVersion;
   end; { TGuardian }
-  {$interfaces com}
+
 { factory provides a global guardian, for thread syncronization ~ singleton on demand }
 function Guardian: TGuardian;
 

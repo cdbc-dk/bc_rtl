@@ -1,12 +1,16 @@
-{******************************************************
-*                                                     *
-*  Thread safe implementation of a Stack, a Queue,    *
-*  a single-linked list and a double-linked list      *
-*  Created:    05.05.1998 /bc Initial version         *
-*  Updated:    03.07.2014 /bc Added thread-safety     *
-*  Refactored: 25.03.2020 /bc Code cleanup.           *
-*                                                     *
-******************************************************}
+{*******************************************************************************
+*                                                                              *
+*  Thread safe implementation of a Stack, a Queue,                             *
+*  a single-linked list and a double-linked list                               *
+*  Created:    05.05.1998 /bc Initial version                                  *
+*  Updated:    03.07.2014 /bc Added thread-safety                              *
+*  Refactored: 25.03.2020 /bc Code cleanup.                                    *
+*              25.03.2020 /bc added guardian to tbcstack both global and fed   *
+*              10.05.2022 /bc added owned guardian to tbcqueue                 *
+*                                                                              *
+*                                                                              *
+*                                                                              *
+*******************************************************************************}
 unit bc_mtlinklist;
 
 interface
@@ -23,7 +27,7 @@ uses
 {$DEFINE UseNodeManager}
 
 const
-	UnitVersion = '2.25.03.2020';
+	UnitVersion = '3.10.05.2022';
   PageNodeCount = 30;
 
 type
@@ -125,10 +129,10 @@ type
     fTail: PsllNode;
     function get_Version: string;
   protected
-//    fLock: TRtlCriticalSection; // 30.04.2020 /bc
     fOnDataInQueue: TNotifyEvent;
-//    procedure Lock;
-//    procedure Unlock;
+    fLock: TGuardian;
+    procedure Lock;
+    procedure Unlock;
     procedure DoOnDataInQueue; { triggers the notify event, with Self as sender param }
   public
     constructor Create;
@@ -402,7 +406,7 @@ end;
 {====================================================================}
 
 
-{===TaaDoubleList========================================================}
+{===TbcDoubleList========================================================}
 constructor TbcDoubleList.Create;
 begin
   inherited Create;
@@ -698,6 +702,7 @@ begin
   if Assigned(fOnDataInQueue) then fOnDataInQueue(Self);
 end;
 
+{--- MT OK ---}
 constructor TbcQueue.Create;
 begin
   inherited Create;
@@ -707,66 +712,88 @@ begin
   fHead^.sllnData:= nil;
   {make the tail pointer point to the head node}
   fTail:= fHead;
+  fLock:= bc_guardian.TGuardian.Create; { setup our own guardian sentinel }
 end;
-{--------------------------}
+
+{--- MT OK ---}
 destructor TbcQueue.Destroy;
 begin
   Clear;
   snmFreeNode(fHead);
+  FreeAndNil(fLock); { teardown our sentinel }
   inherited Destroy;
 end;
-{-----------------------}
+
+{--- MT OK ---}
 procedure TbcQueue.Clear;
 var Temp: PsllNode;
 begin
-  Temp:= fHead^.sllnNext;
-  while (Temp <> nil) do begin
-    fHead^.sllnNext:= Temp^.sllnNext;
-    snmFreeNode(Temp);
+  Lock;
+  try
     Temp:= fHead^.sllnNext;
-  end;
-  fCount:= 0;
-  {the queue is now empty so make the tail pointer point to the head
-   node}
-  fTail:= fHead;
+    while (Temp <> nil) do begin
+      fHead^.sllnNext:= Temp^.sllnNext;
+      snmFreeNode(Temp);
+      Temp:= fHead^.sllnNext;
+    end;
+    fCount:= 0;
+    {the queue is now empty so make the tail pointer point to the head node}
+    fTail:= fHead;
+  finally Unlock; end;
 end;
-{---------------------------------}
+
+{--- MT OK ---}
 function TbcQueue.Examine: pointer;
 begin
-  if (Count = 0) then raise Exception.Create('TbcQueue.Examine: Queue is empty');
-  Result:= fHead^.sllnNext^.sllnData;
+  Lock;
+  try
+    if (Count = 0) then raise Exception.Create('TbcQueue.Examine: Queue is empty');
+    Result:= fHead^.sllnNext^.sllnData;
+  finally Unlock; end;
 end;
-{---------------------------------}
+
+{--- MT OK ---}
 function TbcQueue.IsEmpty: boolean;
 begin
-  Result:= Count = 0;
+  Lock;
+  try
+    Result:= Count = 0;
+  finally Unlock; end;
 end;
-{----------------------------------}
+
+{--- MT OK ---}
 function TbcQueue.De_Queue: pointer;
 var Temp: PsllNode;
 begin
-  if (Count = 0) then raise Exception.Create('TbcQueue.De_Queue: Queue is empty');
-  Temp:= fHead^.sllnNext;
-  Result:= Temp^.sllnData;
-  fHead^.sllnNext:= Temp^.sllnNext;
-  snmFreeNode(Temp);
-  dec(fCount);
-  {if we've managed to empty the queue, the tail pointer is now
-   invalid, so reset it to point to the head node}
-  if (Count = 0) then fTail:= fHead;
+  Lock;
+  try
+    if (Count = 0) then raise Exception.Create('TbcQueue.De_Queue: Queue is empty');
+    Temp:= fHead^.sllnNext;
+    Result:= Temp^.sllnData;
+    fHead^.sllnNext:= Temp^.sllnNext;
+    snmFreeNode(Temp);
+    dec(fCount);
+    {if we've managed to empty the queue, the tail pointer is now
+     invalid, so reset it to point to the head node}
+    if (Count = 0) then fTail:= fHead;
+  finally Unlock; end;
 end;
-{-------------------------------------------}
+
+{--- MT OK ---}
 procedure TbcQueue.En_Queue(anItem: pointer);
 var Temp: PsllNode;
 begin
-  Temp:= snmAllocNode;
-  Temp^.sllnData:= anItem;
-  Temp^.sllnNext:= nil;
-  {add the new node to the tail of the list and make sure the tail
-   pointer points to the newly added node}
-  fTail^.sllnNext:= Temp;
-  fTail:= Temp;
-  inc(fCount);
+  Lock;
+  try
+    Temp:= snmAllocNode;
+    Temp^.sllnData:= anItem;
+    Temp^.sllnNext:= nil;
+    {add the new node to the tail of the list and make sure the tail
+     pointer points to the newly added node}
+    fTail^.sllnNext:= Temp;
+    fTail:= Temp;
+    inc(fCount);
+  finally Unlock; end;
   DoOnDataInQueue;
 end;
 {------------------------------------}
@@ -774,6 +801,19 @@ function TbcQueue.get_Version: string;
 begin
   Result:= UnitVersion;
 end;
+
+{--- MT OK ---}
+procedure TbcQueue.Lock;
+begin
+  fLock.Lock;
+end;
+
+{--- MT OK ---}
+procedure TbcQueue.Unlock;
+begin
+  fLock.UnLock;
+end;
+
 {====================================================================}
 
 procedure FinalizeUnit;

@@ -33,7 +33,8 @@ $*************************************************************************}
 unit bc_datetime;
 interface
 uses
-  SysUtils;
+  SysUtils,
+  DateUtils;
 
 const
   { version control - see bcDateTime.log for details }
@@ -90,7 +91,7 @@ type
     property ISOYear: word read get_IsoYear;
     property ISOWeekNumber: word read get_IsoWeekNumber;
     property Date: TDateTime read get_Date write Set_Date; deprecated;
-    property AsDate: TDateTime read get_Date write Set_Date;
+    property AsDate: TDateTime read get_Date write set_Date;
     property AsInteger: ptrint read get_AsInteger write set_AsInteger;
     property AsString: string read get_AsString write set_AsString;
   end;
@@ -234,6 +235,7 @@ function bcDateToInt(const aDate: TDateTime): ptrint; { 01.05.2020 /bc }
 function bcIntTimeToStr(const aTime: ptrint): string;
 function bcTimeToStr(const aTime: TDateTime): string; { 01.05.2020 /bc }
 function bcDateTimeToStr(const aDateTime: TDateTime): string; { 18.02.2021 /bc }
+function bcDST(const aDateTime: TDateTime): string; { 23.04.2021 /bc }
 
 implementation
 { refactured 01.03.2021 /bc }

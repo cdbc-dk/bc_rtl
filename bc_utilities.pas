@@ -2,13 +2,13 @@
 
 {*******************************************************************************
 * Unit name : bc_utilities.pas                                                 *
-* Copyright : (c) 2020 cdbc.dk                                                 *
+* Copyright : (c) 2020 - 2022 cdbc.dk                                          *
 * Programmer: Benny Christensen /bc                                            *
 * Created   : 2020.05.27 /bc initial version 0.27.05.2020                      *
 * Updated   : 2020.05.27 /bc added collection searching, binary & linear       *
 *             2020.09.13 /bc added codec for word / ptruint                    *
-*                                                                              *
-*                                                                              *
+*             2022.06.24 /bc added quicksort routine for integers + compare    *
+*             2022.07.01 /bc added intdatecompare routine                      *
 *                                                                              *
 ********************************************************************************
 * Abstract:                                                                    *
@@ -23,9 +23,9 @@ unit bc_utilities;
 {$define debug}
 interface
 uses
-  Classes, SysUtils, math;
+  Classes, SysUtils;
 const
-  UnitVersion = '01.27.05.2020';
+  UnitVersion = '02.01.07.2022';
 
 
 type
@@ -37,9 +37,22 @@ type
 //    b1,b2,b3,b4: byte; { 32 bit ~ byte / 64 bit ~ word }
   end;
 
+  PDateRec = ^TDateRec;
+  TDateRec = packed record
+    drYear,
+    drWeek,
+    drDay,
+    drMonth: word;
+  end;
+
+  PPtrUInt = ^ptruint;
 
   bc_Collection = class(TCollection);
   TSearchCallback = TNotifyEvent;
+  TIntArraySortCompare = function(Item1, Item2: ptruint): longint; // 24.06.2022
+
+{ sorting routines }
+procedure SortIntArray(var anArray: array of ptruint); // 25.06.2022
 
 { searching collections }
 function bcBinarySearch(aValue: ptrint;aCollection: TCollection): ptrint;
@@ -60,7 +73,122 @@ const
   { Version just get added on. }
 
 var lSearchCallback: TSearchCallback;
+{ function prototype for sorting
+  TListSortCompare = function(Item1, Item2: pointer): integer;
+  TIntArraySortCompare = function(Item1, Item2: ptruint): longint; }
 
+{ sort an array of integer-dates }
+function IntDateCompare(Item1, Item2: ptruint): longint; { =^ }
+{ 1 = item1 > item2; 0 equal; -1 = item1 < item2 }
+begin
+  if PDateRec(@Item1)^.drYear > PDateRec(@Item2)^.drYear then Result:= 1
+  else if PDateRec(@Item1)^.drYear < PDateRec(@Item2)^.drYear then Result:= -1
+  else begin { years equal }
+    if PDateRec(@Item1)^.drMonth > PDateRec(@Item2)^.drMonth then Result:= 1
+    else if PDateRec(@Item1)^.drMonth < PDateRec(@Item2)^.drMonth then Result:= -1
+    else begin { months equal }
+      if PDateRec(@Item1)^.drDay > PDateRec(@Item2)^.drDay then Result:= 1
+      else if PDateRec(@Item1)^.drDay < PDateRec(@Item2)^.drDay then Result:= -1
+      else Result:= 0; { days ~ dates are equal }
+    end;
+  end;
+end; { IntDateCompare }
+
+{ sort an array of integers }
+function IntCompare(Item1, Item2: ptruint): longint; { =^ }
+{ 1 = item1 > item2; 0 equal; -1 = item1 < item2 }
+begin
+  if Item1 > Item2 then Result:= 1
+  else if Item1 < Item2 then Result:= -1
+  else Result:= 0;
+end; { IntCompare }
+
+Procedure QuickSortIntArray(var anArray: array of ptruint;L, R: longint;
+                            Compare: TIntArraySortCompare);
+var
+  I, J : longint; // indexes
+  P, Q : ptruint; // data
+begin
+  repeat
+    I:= L;
+    J:= R;
+    P:= anArray[(L + R) div 2];
+    repeat
+      while Compare(P, anArray[I]) > 0 do I:= I + 1;
+      while Compare(P, anArray[J]) < 0 do J:= J - 1;
+      If I <= J then begin
+        Q:= anArray[I];
+        anArray[I]:= anArray[J];
+        anArray[J]:= Q;
+        I:= I + 1;
+        J:= J - 1;
+      end;
+    until I > J;
+    // sort the smaller range recursively
+    // sort the bigger range via the loop
+    // Reasons: memory usage is O(log(n)) instead of O(n) and loop is faster than recursion
+    if J - L < R - I then begin
+      if L < J then QuickSortIntArray(anArray,L,J,Compare);
+      L:= I;
+    end else begin
+      if I < R then QuickSortIntArray(anArray,I,R,Compare);
+      R:= J;
+    end;
+  until L >= R;
+end; { QuickSortIntArray }
+
+procedure SortIntArray(var anArray: array of ptruint);
+begin
+  if length(anArray) < 2 then exit; // well duhh, safety check
+//  QuickSortIntArray(anArray,low(anArray),high(anArray),@IntCompare);
+  QuickSortIntArray(anArray,low(anArray),high(anArray),@IntDateCompare);
+end; { SortIntArray }
+
+(*
+{ sort a list of pointers }
+Procedure QuickSort(FList: PPointerList; L, R : Longint;
+                     Compare: TListSortCompare);
+var
+  I, J : Longint;
+  P, Q : Pointer;
+begin
+ repeat
+   I := L;
+   J := R;
+   P := FList^[ (L + R) div 2 ];
+   repeat
+     while Compare(P, FList^[i]) > 0 do
+       I := I + 1;
+     while Compare(P, FList^[J]) < 0 do
+       J := J - 1;
+     If I <= J then
+     begin
+       Q := FList^[I];
+       Flist^[I] := FList^[J];
+       FList^[J] := Q;
+       I := I + 1;
+       J := J - 1;
+     end;
+   until I > J;
+   // sort the smaller range recursively
+   // sort the bigger range via the loop
+   // Reasons: memory usage is O(log(n)) instead of O(n) and loop is faster than recursion
+   if J - L < R - I then
+   begin
+     if L < J then
+       QuickSort(FList, L, J, Compare);
+     L := I;
+   end
+   else
+   begin
+     if I < R then
+       QuickSort(FList, I, R, Compare);
+     R := J;
+   end;
+ until L >= R;
+end;  
+*)
+  
 { search for an item in a sorted list/array/collection, if not found ~ result = -1
   on very big datasets, it'll need around 20 passes, so on datasets with < 20 items
   a linear search will be quicker }

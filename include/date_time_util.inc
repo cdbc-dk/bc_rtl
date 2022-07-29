@@ -73,4 +73,9 @@ begin
   I:= nil;
 end;
 
+function bcDST(const aDateTime: TDateTime): string;
+begin
+
+end;
+
 { included by bc_datetime.pas }

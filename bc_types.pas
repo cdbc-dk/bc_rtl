@@ -1,7 +1,7 @@
 
 {**************************************************************************
 * Unit name : bc_types.pas                                                *
-* Copyright : (c) 2020-2021 cdbc.dk                                       *
+* Copyright : (c) 2020-2022 cdbc.dk                                       *
 * Programmer: Benny Christensen /bc                                       *
 * Created   : 2020.04.18 /bc: TVersion created.                           *
 * Updated   : 2020.04.20 /bc: Refactored the math in both                 *
@@ -11,7 +11,10 @@
 *                             Implementation moved to include.            *
 *           : 2021.02.26 /bc: Implemented the observer pattern            *
 *                             Headers here and implementation             *
-*                             in observer.inc                             *
+*                             in bc_observer.inc                          *
+*           : 2022.07.20 /bc: Implemented TbcNamedMemoryStream            *
+*                             Headers here and implementation             *
+*                             in bc_namedmemorystream.inc                 *
 *                                                                         *
 ***************************************************************************
 *                                                                         *
@@ -40,7 +43,7 @@ uses
 
   {$endif}
 const
-  UnitVersion = '01.02.27.2021'; { 2.nd version }
+  UnitVersion = '02.03.14.2021'; { 3.rd version }
   { GUID for IbcSubject and IbcObserver }
   SGUIDIbcSubject  = '{A036909B-DB8A-4426-843E-24DC452A7100}';
   SGUIDIbcObserver = '{D013282B-CA63-497D-AF2D-BF10D2C34A82}';
@@ -111,14 +114,26 @@ type
     property Owner: TObject read fOwner write fOwner;
   end; { TbcObserver }
 
+  { TbcNamedMemoryStream ~ knows its own name, useful in "blobs" }
+  TbcNamedMemoryStream = class(TMemoryStream)
+  protected
+    fName: string; { where am i coming from or going to??? }
+  public
+    constructor Create; overload;
+    constructor Create(const aName: string); overload;
+    destructor Destroy; override;
+//    Procedure bcSubjectChanged(aSender: TObject;anOperation: TbcSubjectOperation;aData: pointer); virtual;
+    property Name: string read fName write fName;
+  end; { TbcNamedMemoryStream }
+
 { factory provides a global object, singleton on demand }
 //Function Factory: TFactory;
 
 implementation
 
-{$i version.inc} { moved the implementation part to an include-file }
-{$i observer.inc} { moved the implementation part to an include-file }
-
+{$i bc_version.inc} { moved the implementation part to an include-file }
+{$i bc_observer.inc} { moved the implementation part to an include-file }
+{$i bc_namedmemorystream.inc}             { --- " --- }
 
 (*
 var

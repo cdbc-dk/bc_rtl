@@ -33,11 +33,12 @@ $*************************************************************************}
 unit bc_datetime;
 interface
 uses
-  SysUtils;
+  SysUtils,
+  DateUtils;
 
 const
   { version control - see bcDateTime.log for details }
-  UnitVersion = '10.01.03.2021';
+  UnitVersion = '10.09.03.2021';
   { Danish day and month names }
   DayNames: array[1..7]of string = ('Mandag',
                                     'Tirsdag',
@@ -234,6 +235,7 @@ function bcDateToInt(const aDate: TDateTime): ptrint; { 01.05.2020 /bc }
 function bcIntTimeToStr(const aTime: ptrint): string;
 function bcTimeToStr(const aTime: TDateTime): string; { 01.05.2020 /bc }
 function bcDateTimeToStr(const aDateTime: TDateTime): string; { 18.02.2021 /bc }
+function bcDST(const aDateTime: TDateTime): string; { 23.04.2021 /bc }
 
 implementation
 { refactured 01.03.2021 /bc }
