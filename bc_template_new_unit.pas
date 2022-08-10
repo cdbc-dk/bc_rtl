@@ -1,33 +1,33 @@
 
-{**************************************************************************$
-$        Unit name : u_treeview.pas                                        $
-$        Copyright : (C)cdbc.dk 2021                                       $
-$        Programmer: Benny Christensen                                     $
-$        Created   : 2021.02.23 /bc helper for dealing with ttreeview      $
-$        Updated   : 2021.02.23 /bc                                        $
-$                                                                          $
-$                                                                          $
-$                                                                          $
-$                                                                          $
-$                                                                          $
-$                                                                          $
-$                                                                          $
-$                                                                          $
-$                                                                          $
-$**************************************************************************$
-$        Purpose   :                                                       $
-$        One date interface / class, which                                 $
-$        implements ISO weeknumber                                         $
-$        calculations, as well as some                                     $
-$        service functionality.                                            $
-$        One time interface / class.                                       $
-$        One IISoDateTime interface / class                                $
-$        TODO: implement week-stuff                                        $
-$**************************************************************************$
-$        License   :                                                       $
-$        "Beer License" - If you meet me one day, you'll buy me a beer :-) $
-$        I'm NOT liable for anything! Use at your own risk!!!              $
-$**************************************************************************}
+{***************************************************************************
+*        Unit name : bc_trvhelp.pas                                        *
+*        Copyright : (C)cdbc.dk 2022                                       *
+*        Programmer: Benny Christensen                                     *
+*        Created   : 2022.07.31 /bc helper for dealing with ttreeview.     *
+*        Updated   : 2022.08.03 /bc added functions for adding, searching  *
+*                                   and deleting nodes in a treeview.      *
+*                    2022.08.05 /bc updated cleartreeview to cater for all *
+*                                   rootnodes...                           *
+*                                                                          *
+*                                                                          *
+*                                                                          *
+*                                                                          *
+*                                                                          *
+*                                                                          *
+****************************************************************************
+*        Purpose:                                                          *
+*        Helper functions / procedures to aid in manipulating and          *
+*        working with TTreeview and TTreeNodes                             *
+*                                                                          *
+*                                                                          *
+*                                                                          *
+*                                                                          *
+*        TODO:                                                             *
+****************************************************************************
+*        License:                                                          *
+*        "Beer License" - If you meet me one day, you'll buy me a beer :-) *
+*        I'm NOT liable for anything! Use at your own risk!!!              *
+***************************************************************************}
 
 unit template_new_unit;
 {$mode objfpc}{$H+}

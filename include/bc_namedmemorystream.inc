@@ -18,5 +18,5 @@ destructor TbcNamedMemoryStream.Destroy;
 begin
   inherited Destroy;
 end;
-
+{ *** TbcNamedMemoryStream *** }
 { included by bc_types.pas }    

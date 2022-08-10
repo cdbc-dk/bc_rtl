@@ -48,6 +48,7 @@ destructor TbcSubject.Destroy;
 begin
   if assigned(fObservers) then begin
     bcNotifyObservers(Owner,ooFree,nil);
+    // clear observers
     FreeAndNil(fObservers);
   end;
   inherited Destroy;
@@ -85,5 +86,5 @@ begin
     Obs.bcSubjectChanged(Owner,anOperation,aData);
   end;
 end;
-
+{ *** TbcObserver *** }
 { included by bc_types.pas }
