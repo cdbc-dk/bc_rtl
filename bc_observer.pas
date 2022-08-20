@@ -92,14 +92,7 @@ var
   PObsRec: PObserverRec;
 begin
   { example code to be overridden! }
-  PObsRec:= Data;
-  case Operation of
-    ooChange: begin
-
-                //PObsRec^.orMin;
-              end;
-  end;
-  // TODO
+  raise EObserver.Create('ERROR: TObserver Method "FPOObservedChanged" not overridden!');
 end;
 
 { *** TObserved *** }
@@ -113,10 +106,7 @@ end;
 destructor TObserved.Destroy;
 begin
   fSubject:= nil;
-  if assigned(fObservers) then begin
-    FPONotifyObservers(Self,ooFree,nil);
-    FreeAndNil(fObservers); // FreeAndNil(fObservers);
-  end;
+  if assigned(fObservers) then FreeAndNil(fObservers);
   inherited Destroy;
 end;
 

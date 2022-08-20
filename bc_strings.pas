@@ -54,7 +54,9 @@ type
     property VersionAsPtrUint: ptruint read getVersionAsPtrUint;
   end; { IStringWorkshop }
 
-{ factory creates a singleton }
+{ TODO -o' /bc' -c' someday' : Convert interface to corba & change factory method }
+
+{ factory creates a singleton }              //bm
 function StringWorkshop: IStringWorkshop;
 { utility functions }
 function bcGetFieldToken(const FieldNo: ptrint;const S: string;const Separator: char): string;
