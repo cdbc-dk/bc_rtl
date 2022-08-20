@@ -30,7 +30,7 @@ uses
   Classes, SysUtils;
 
 const
-  UnitVersion = '03.10.01.2021'; { 4.th version }
+  UnitVersion = '03.07.02.2021'; { 4.th version }
 
 type
   { datarecord for opbservers }
@@ -92,14 +92,7 @@ var
   PObsRec: PObserverRec;
 begin
   { example code to be overridden! }
-  PObsRec:= Data;
-  case Operation of
-    ooChange: begin
-
-                //PObsRec^.orMin;
-              end;
-  end;
-  // TODO
+  raise EObserver.Create('ERROR: TObserver Method "FPOObservedChanged" not overridden!');
 end;
 
 { *** TObserved *** }
@@ -113,9 +106,9 @@ end;
 destructor TObserved.Destroy;
 begin
   fSubject:= nil;
-  if assigned(fObservers) then begin
+  if assigned(fObservers) then FreeAndNil(fObservers);
     FPONotifyObservers(Self,ooFree,nil);
-    FreeAndNil(fObservers); // FreeAndNil(fObservers);
+     // FreeAndNil(fObservers);
   end;
   inherited Destroy;
 end;

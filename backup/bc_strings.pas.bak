@@ -30,6 +30,7 @@ uses
 
 const
   UnitVersion = '3.20.04.2020';
+  UnitVersionAsInteger = 844510829742052;
   SGUIDIStringWorkshop = '{2220CA2B-FEAB-48B4-A277-44C13C9F6C31}';
 
 type

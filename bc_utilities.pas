@@ -64,6 +64,11 @@ function bcSearchEx(aValue: ptrint;aCollection: TCollection;aCallback: TSearchCa
 function EncodePtrUint(const w1, w2, w3, w4: word): ptruint;
 function DecodePtrUint(const I: ptruint): TIntRecord;
 
+{ stream routines }
+{ writes the contents of stream 2 to the end of stream 1, with or without a
+  separator ~ #10' <----->'#10, 20.08.2022 /bc}
+function ConcatenateStreams(aStream1, aStream2: TStream;WithSeparator: boolean = true): boolean;
+
 implementation
 const
   { modifiers for date calculations }
@@ -265,6 +270,33 @@ begin
   Rem:= Rem mod Month_Mod;        { get the remainder }
   Result.b2:= Rem div Day_Mod;    { calculate the third word }
   Result.b1:= Rem mod Day_Mod;    { the rest is the fourth word }
+end;
+
+{ writes the contents of stream 2 to the end of stream 1, with or without a separator ~ #10' <----->'#10 }
+function ConcatenateStreams(aStream1, aStream2: TStream;WithSeparator: boolean = true): boolean;
+const Separator = #10' <----->'#10;
+var
+  Buffer: pointer;
+  Res,Sz: int64;
+begin
+  Result:= false;
+  Sz:= aStream1.Size;
+  Getmem(Buffer,aStream2.Size); //  Buffer:= GetMem(aStream2.Size); // works too
+  try
+    aStream2.Position:= 0;
+    aStream1.Seek(0,soEnd); //    aStream2.ReadBuffer(Buffer^,aStream2.Size); // procedure ~ no result
+    Res:= aStream2.Read(Buffer^,aStream2.Size); // function ~ results in bytes read
+    if WithSeparator then begin { with separator }
+      aStream1.Write(Separator[1],length(Separator)); //    aStream1.WriteBuffer(Separator,length(Separator));
+      if Res > 0 then aStream1.WriteBuffer(Buffer^,Res);
+      Result:= (Sz + Res + length(Separator)) = aStream1.Size;
+    end else begin { without separator }
+      if Res > 0 then aStream1.WriteBuffer(Buffer^,Res);
+      Result:= (Sz + Res) = aStream1.Size;
+    end;
+  finally Freemem(Buffer); end;
+  aStream2.Position:= 0;
+  aStream1.Position:= 0;
 end;
 
 initialization
