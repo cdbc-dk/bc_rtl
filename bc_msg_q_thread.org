@@ -8,8 +8,6 @@
             * Updated   : 2020.05.01 /bc debugging thread   *
             *             2020.05.01 /bc added fileguard    *
             *             2020.05.02 /bc refactored code    *
-            *             2022.08.25 /bc code got on a diet *
-            *                                               *
             *                                               *
             *************************************************
             * Abstract:                                     *
@@ -21,7 +19,7 @@
 
 unit bc_msg_q_thread;
 {$mode objfpc}{$H+}
-{-$define debug}
+{$define debug}
 interface
 uses
   Classes, SysUtils,
@@ -39,7 +37,6 @@ const
 type
   { TMsgQEvent is a callback from the message queue }
   TMsgQEvent = procedure(aData: ptrint) of object; { 02.05.2020 /bc }
-  TThreadCallback = procedure(Sender: TThread;Handle: THandle;Data: pointer) of object; { 25.08.2022 /bc }
   { TMessageQThread }
   TMessageQThread = class(TThread)
   protected
@@ -48,7 +45,7 @@ type
     fWaitTimeout: ptrint;
     fErrorLog: TObject;
     fHandle: ptrint;
-    fOnCallback: TThreadCallback; { 25.08.2022 /bc }
+    fOnCallback: TMsgQEvent; { 02.05.2020 /bc }
     function GetMsg(var aHandle: ptrint;var aWParam: ptrint;var aLParam: ptrint;var aSParam: string): ptrint; { internal }
     function get_AsPtrint: ptrint; { 02.05.2020 /bc }
     procedure DoLogMsg(const aLogLine: string);
@@ -57,18 +54,16 @@ type
     constructor Create(const aHandle: ptrint;const aWaitTimeout: ptrint); { 02.05.2020 /bc }
     destructor Destroy; override;
     procedure Execute; override;
-    { this one is to be overridden instead of execute }
-    procedure ExecuteNew(aHandle,aMsg,aWParam,aLParam: ptrint;aSParam: string); virtual;
     procedure PostMsg(aMsg: TbcMessage); overload;
     procedure PostMsg(aHandle,aMsg,aWParam,aLParam: ptrint;aSParam: string); overload;
     property MsgWaitTimeout: ptrint read fWaitTimeout write fWaitTimeout;
-    property OnCallback: TThreadCallback read fOnCallback write fOnCallback; { 02.05.2020 /bc }
+    property OnCallback: TMsgQEvent read fOnCallback write fOnCallback; { 02.05.2020 /bc }
     property AsPtrint: ptrint read get_AsPtrint; { 02.05.2020 /bc }
   end;
 
 { global lock for TMessageQThread, messages only! NO file-mickey stuff }
 var
-  AppQGuard: TGuardian;
+  MsgQGuard: TGuardian;
 { ErrorLogMt is a global logging mechanism, just add it to your uses clause
   and it will run in the background, use the "PostMsg" to send messages to
   it. Important: remember to enable "cthreads" in the project file }
@@ -94,7 +89,10 @@ begin
   try                     { wait until event is set by msg in queue or timeout }
     if fMsgQueue.IsEmpty then RtlEventWaitFor(fWaitEvent,fWaitTimeout);
     if not fMsgQueue.IsEmpty then begin  { are there any messages in our queue }
-      Msg:= fMsgQueue.Dequeue;        { try to get the 1.st message from queue } //bm
+      MsgQGuard.Lock;                                { enter protected section }
+      try
+        Msg:= fMsgQueue.Dequeue;      { try to get the 1.st message from queue }
+      finally MsgQGuard.UnLock; end;{ make sure we leave the protected section }
       aHandle:= Msg.Handle;           { assign msg properties to variables and }
       Result:= Msg.Msg;                      { the msg is returned in "Result" }
       aWParam:= Msg.WParam;
@@ -111,10 +109,10 @@ begin
     end;
   except on E:Exception do
     begin
-      ErrorGuard.Lock;                          { enter protected file section }
+      FileGuard.Lock;                           { enter protected file section }
       try                                    { write error message to log-file }
         TErrorLog(fErrorLog).LogLn('Error in TMessageQThread.GetMsg: '+E.Message);
-      finally ErrorGuard.UnLock; end;{ make sure we leave the protected section }
+      finally FileGuard.UnLock; end;{ make sure we leave the protected section }
     end;
   end;
 end;
@@ -126,15 +124,15 @@ end;
 
 procedure TMessageQThread.DoLogMsg(const aLogLine: string);
 begin
-  ErrorGuard.Lock;                               { enter protected file section }
+  FileGuard.Lock;                               { enter protected file section }
   try                               { write string with time stamp to log-file }
     TErrorLog(fErrorLog).LogLn('['+bcTimeToStr(now)+'] '+aLogLine);
-  finally ErrorGuard.UnLock; end;    { make sure we leave the protected section }
+  finally FileGuard.UnLock; end;    { make sure we leave the protected section }
 end;
 
 procedure TMessageQThread.DoOnCallback; { 02.05.2020 /bc }
 begin
-  if assigned(fOnCallback) then fOnCallback(Self,fHandle,pchar('Dette er en text fra tråden :-)')); { 25.08.2022 /bc }
+  if assigned(fOnCallback) then fOnCallback(Self.AsPtrint); { 02.05.2020 /bc }
 end;
 
 constructor TMessageQThread.Create(const aHandle: ptrint;const aWaitTimeout: ptrint);
@@ -145,31 +143,33 @@ begin
   fWaitEvent:= RTLEventCreate;                        { initialize wait object }
   fWaitTimeout:= aWaitTimeout;                            { initialize timeout }
   fErrorLog:= TErrorLog.Create('msg_q.log');{ we don't like exceptions in a thread }
+  FreeOnTerminate:= true;                                       { conveinience }
   Start;                                        { don't forget to get us going }
-  {$ifdef debug}
-  AppQGuard.Lock;                     { enter the application protected section }
+  Guardian.Lock;                     { enter the application protected section }
   try                                      { send a message to the application }
     MsgQ.EnQueue(TbcMessage.Create(-1,LM_THREAD,-1,ThreadID,'TMessageQThread created'));
-  finally AppQGuard.UnLock; end;     { make sure we leave the protected section }
-  {$endif}
+  finally Guardian.UnLock; end;     { make sure we leave the protected section }
 end;
 
 destructor TMessageQThread.Destroy;
 var Msg: TbcMessage;
 begin 
   try
-    while not fMsgQueue.IsEmpty do begin
-      Msg:= fMsgQueue.Dequeue;   { TbcQueue locks, any messages left in queue? }
-      Msg.Free;                                              {  then free them }
-    end;
+    MsgQGuard.Lock;                          { enter protected message section }
+    try
+      while not fMsgQueue.IsEmpty do begin
+        Msg:= fMsgQueue.Dequeue;  { any messages left in queue, then free them }
+        Msg.Free;
+      end;
+    finally MsgQGuard.UnLock; end;  { make sure we leave the protected section }
     FreeAndNil(fMsgQueue);                                             { Done! }
     RTLeventdestroy(fWaitEvent);                        { finalize wait object }
   except on E:Exception do
     begin
-      ErrorGuard.Lock;                           { enter protected file section }
+      FileGuard.Lock;                           { enter protected file section }
       try                                { write our error message to log-file }
         TErrorLog(fErrorLog).LogLn('Error in TMessageQThread.Destroy: '+E.Message);
-      finally ErrorGuard.UnLock; end;{ make sure we leave the protected section }
+      finally FileGuard.UnLock; end;{ make sure we leave the protected section }
     end;
   end;
   FreeAndNil(TErrorLog(fErrorLog));                 { we own it, so we free it }
@@ -181,12 +181,10 @@ var
   lHandle,lWParam,lLParam: ptrint;
   lSParam: string;
 begin
-  {$ifdef debug}
-  AppQGuard.Lock;                    { enter the application protected section }
+  Guardian.Lock;                     { enter the application protected section }
   try                                { send a message to the ui, we're running }
     MsgQ.EnQueue(TbcMessage.Create(-1,LM_THREAD,-1,ThreadID,'TMessageQThread is running'));
-  finally AppQGuard.UnLock; end;    { make sure we leave the protected section }
-  {$endif}
+  finally Guardian.UnLock; end;     { make sure we leave the protected section }
   while not Terminated do try                          { enter our thread-loop }
     case GetMsg(lHandle,lWParam,lLParam,lSParam) of       { check messagequeue }
       LM_LOGMSG: begin                      { we need to write to the log-file }
@@ -199,59 +197,48 @@ begin
       LM_CALLBACK: begin
                      DoOnCallback; { call the callback function with self as parameter }
                    end;
-      else         begin { this condition basically acts like a "fall through" }
-                     ExecuteNew(lHandle,-1,lWParam,lLParam,lSParam); { gets called a LOT }
-                   end;
     end;
     Sleep(100);                                        { take a short breather }
   except on E:Exception do
     begin
-      ErrorGuard.Lock;                           { enter protected file section }
+      FileGuard.Lock;                           { enter protected file section }
       try                                { write our error message to log-file }
         TErrorLog(fErrorLog).LogLn('Error in TMessageQThread.Execute -> '+E.Message);
-      finally ErrorGuard.UnLock; end;{ make sure we leave the protected section }
+      finally FileGuard.UnLock; end;{ make sure we leave the protected section }
     end;
   end;
-  {$ifdef debug}
-  { it's dangerous to communicate here, as we're shutting down, terminated }
-  AppQGuard.Lock;                    { enter the application protected section }
+  Guardian.Lock;                     { enter the application protected section }
   try                            { send a message to the ui, we're terminating }
     MsgQ.EnQueue(TbcMessage.Create(fHandle,LM_THREAD,-1,ThreadID,'TMessageQThread is terminating'));
-  finally AppQGuard.UnLock; end;    { make sure we leave the protected section }
-  {$endif}
-end;
-
-procedure TMessageQThread.ExecuteNew(aHandle, aMsg, aWParam, aLParam: ptrint;
-  aSParam: string);
-begin
-  // TODO: something, i'm called from execute...
-  if not Terminated then begin
-//    DoLogMsg('Hello from "ExecuteNew" '+aWParam.ToString+' '+aLParam.ToString+' '+aSParam);
-/// do something ///
-  end;
+  finally Guardian.UnLock; end;     { make sure we leave the protected section }
 end;
 
 procedure TMessageQThread.PostMsg(aMsg: TbcMessage);
 begin
-  fMsgQueue.Enqueue(aMsg);        { put the message in our own command queue }
-  RtlEventSetEvent(fWaitEvent);                        { trigger wait object }
+  MsgQGuard.Lock;                  { enter the message queue protected section }
+  try
+    fMsgQueue.Enqueue(aMsg);        { put the message in our own command queue }
+    RtlEventSetEvent(fWaitEvent);                        { trigger wait object }
+  finally MsgQGuard.UnLock; end;    { make sure we leave the protected section }
 end;
 
 procedure TMessageQThread.PostMsg(aHandle,aMsg,aWParam,aLParam: ptrint;aSParam: string);
 var Msg: TbcMessage;
 begin
-  Msg:= TbcMessage.Create(aHandle,aMsg,aWParam,aLParam,aSParam); { well duh! }
-  fMsgQueue.Enqueue(Msg);
-  RtlEventSetEvent(fWaitEvent);                        { trigger wait object }
+  MsgQGuard.Lock;                  { enter the message queue protected section }
+  try                               { put the message in our own command queue }
+    Msg:= TbcMessage.Create(aHandle,aMsg,aWParam,aLParam,aSParam); { well duh! }
+    fMsgQueue.Enqueue(Msg);
+    RtlEventSetEvent(fWaitEvent);                        { trigger wait object }
+  finally MsgQGuard.UnLock; end;    { make sure we leave the protected section }
 end;
 
 initialization
   Singleton:= nil;                              { gets created on demand (jit) }
-  AppQGuard:= TGuardian.Create;                             { gets created now }
+  MsgQGuard:= TGuardian.Create;                             { gets created now }
 finalization
   Singleton.Terminate;                          { terminate the running thread }
   Singleton.WaitFor;                { wait for the running thread to terminate }
-  FreeAndNil(Singleton); { teardown and "nil" it, my preference over "FreeOnTerminate"}
-  FreeAndNil(AppQGuard);                                { teardown and "nil" it}
-end.
-
+  FreeAndNil(Singleton);                                { teardown and "nil" it}
+  FreeAndNil(MsgQGuard);                                { teardown and "nil" it}
+end. 
