@@ -1,36 +1,32 @@
 
 
             {************************************************
-            * Unit name : bc_msg_q_thread.pas                *
-            * Copyright : (c) 2020 cdbc.dk                  *
+            * Unit name : bc_errorlog_mt.pas                *
+            * Copyright : (c) 2020-2022 cdbc.dk             *
             * Programmer: Benny Christensen /bc             *
             * Created   : 2020.05.01 /bc                    *
             * Updated   : 2020.05.01 /bc debugging thread   *
             *             2020.05.01 /bc added fileguard    *
             *             2020.05.02 /bc refactored code    *
             *             2022.08.25 /bc code got on a diet *
-            *                                               *
+            *                            refactoring        *
             *                                               *
             *************************************************
             * Abstract:                                     *
             * ErrorLogMT is a global singleton, that        *
             * provides error-logging for your program.      *
             * No interface, just add bc_errorlog_mt to your *
-            * uses clause and pass lines to log.            *
+            * uses clause and post messages to it           *
             ************************************************}
 
-unit bc_msg_q_thread;
+unit bc_errorlog_mt;
 {$mode objfpc}{$H+}
 {-$define debug}
 interface
 uses
-  Classes, SysUtils,
-  bc_guardian,
-  bc_msgqueue,
-  bc_datetime;
-
+  Classes, SysUtils, bc_guardian, bc_msgqueue, bc_datetime;
 const
-  UnitVersion = '01.02.05.2020';
+  UnitVersion = '02.25.08.2022';
   {$ifdef Linux}
     OSDIRSEPARATOR = '/';
     CRLF = #10;
@@ -39,6 +35,7 @@ const
 type
   { TMsgQEvent is a callback from the message queue }
   TMsgQEvent = procedure(aData: ptrint) of object; { 02.05.2020 /bc }
+  { TThreadCallback is a mechanism, that allows the user to run code in a thread, msg = LM_CALLBACK }
   TThreadCallback = procedure(Sender: TThread;Handle: THandle;Data: pointer) of object; { 25.08.2022 /bc }
   { TMessageQThread }
   TMessageQThread = class(TThread)
@@ -53,18 +50,18 @@ type
     function get_AsPtrint: ptrint; { 02.05.2020 /bc }
     procedure DoLogMsg(const aLogLine: string);
     procedure DoOnCallback; { 02.05.2020 /bc }
-  public
-    constructor Create(const aHandle: ptrint;const aWaitTimeout: ptrint); { 02.05.2020 /bc }
-    destructor Destroy; override;
     procedure Execute; override;
     { this one is to be overridden instead of execute }
     procedure ExecuteNew(aHandle,aMsg,aWParam,aLParam: ptrint;aSParam: string); virtual;
+  public
+    constructor Create(const aHandle: ptrint;const aWaitTimeout: ptrint); { 02.05.2020 /bc }
+    destructor Destroy; override;
     procedure PostMsg(aMsg: TbcMessage); overload;
     procedure PostMsg(aHandle,aMsg,aWParam,aLParam: ptrint;aSParam: string); overload;
     property MsgWaitTimeout: ptrint read fWaitTimeout write fWaitTimeout;
     property OnCallback: TThreadCallback read fOnCallback write fOnCallback; { 02.05.2020 /bc }
     property AsPtrint: ptrint read get_AsPtrint; { 02.05.2020 /bc }
-  end;
+  end; { TMessageQThread }
 
 { global lock for TMessageQThread, messages only! NO file-mickey stuff }
 var
@@ -144,7 +141,7 @@ begin
   fMsgQueue:= TbcMessageQueue.Create;                    { create our own msgq }
   fWaitEvent:= RTLEventCreate;                        { initialize wait object }
   fWaitTimeout:= aWaitTimeout;                            { initialize timeout }
-  fErrorLog:= TErrorLog.Create('msg_q.log');{ we don't like exceptions in a thread }
+  fErrorLog:= TErrorLog.Create('error.log');{ we don't like exceptions in a thread }
   Start;                                        { don't forget to get us going }
   {$ifdef debug}
   AppQGuard.Lock;                     { enter the application protected section }
@@ -189,12 +186,12 @@ begin
   {$endif}
   while not Terminated do try                          { enter our thread-loop }
     case GetMsg(lHandle,lWParam,lLParam,lSParam) of       { check messagequeue }
-      LM_LOGMSG: begin                      { we need to write to the log-file }
-                   DoLogMsg(MsgToStr(LM_LOGMSG)+' '+lWParam.ToString+' '+lLParam.ToString+' '+lSParam);
-                 end;
+      LM_LOGMSG  : begin                    { we need to write to the log-file }
+                     DoLogMsg(MsgToStr(LM_LOGMSG)+' '+lWParam.ToString+' '+lLParam.ToString+' '+lSParam);
+                   end;
       LM_DONE    : begin                      { we've been terminated, bye bye }
                      DoLogMsg('TMessageQThread.Execute: Received LM_DONE, terminating');
-                     Terminate;                                           { quit }
+                     Terminate;                                         { quit }
                    end;
       LM_CALLBACK: begin
                      DoOnCallback; { call the callback function with self as parameter }
@@ -228,7 +225,11 @@ begin
   if not Terminated then begin
 //    DoLogMsg('Hello from "ExecuteNew" '+aWParam.ToString+' '+aLParam.ToString+' '+aSParam);
 /// do something ///
+
   end;
+// or  while not Terminated do begin
+//       { here you can run till the end of days, if you want to }
+//     end;
 end;
 
 procedure TMessageQThread.PostMsg(aMsg: TbcMessage);

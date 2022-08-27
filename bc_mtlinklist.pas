@@ -697,13 +697,13 @@ end;
 {====================================================================}
 
 {===TbcQueue=========================================================}
-procedure TbcQueue.DoOnDataInQueue;
+procedure TbcQueue.DoOnDataInQueue; { threadsafe, but the callback isn't! }
 begin
   if Assigned(fOnDataInQueue) then fOnDataInQueue(Self);
 end;
 
 {--- MT OK ---}
-constructor TbcQueue.Create;
+constructor TbcQueue.Create; { threadsafe }
 begin
   inherited Create;
   {allocate a head node}
@@ -716,7 +716,7 @@ begin
 end;
 
 {--- MT OK ---}
-destructor TbcQueue.Destroy;
+destructor TbcQueue.Destroy; { threadsafe }
 begin
   Clear;
   snmFreeNode(fHead);
@@ -725,7 +725,7 @@ begin
 end;
 
 {--- MT OK ---}
-procedure TbcQueue.Clear;
+procedure TbcQueue.Clear; { threadsafe }
 var Temp: PsllNode;
 begin
   Lock;
@@ -743,7 +743,7 @@ begin
 end;
 
 {--- MT OK ---}
-function TbcQueue.Examine: pointer;
+function TbcQueue.Examine: pointer; { threadsafe }
 begin
   Lock;
   try
@@ -753,7 +753,7 @@ begin
 end;
 
 {--- MT OK ---}
-function TbcQueue.IsEmpty: boolean;
+function TbcQueue.IsEmpty: boolean; { threadsafe }
 begin
   Lock;
   try
@@ -762,7 +762,7 @@ begin
 end;
 
 {--- MT OK ---}
-function TbcQueue.De_Queue: pointer;
+function TbcQueue.De_Queue: pointer; { threadsafe }
 var Temp: PsllNode;
 begin
   Lock;
@@ -780,7 +780,7 @@ begin
 end;
 
 {--- MT OK ---}
-procedure TbcQueue.En_Queue(anItem: pointer);
+procedure TbcQueue.En_Queue(anItem: pointer); { threadsafe }
 var Temp: PsllNode;
 begin
   Lock;

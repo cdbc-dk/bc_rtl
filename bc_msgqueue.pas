@@ -35,17 +35,21 @@ const
   { unit version control to keep track of development }
   UnitVersion = '3.06.05.2020';
   { internal messages for use between daemon & app }
-  LM_CREATE   = LM_USER+1;
-  LM_LISTEN   = LM_USER+3;
-  LM_ACCEPT   = LM_USER+5;
-  LM_WORKING  = LM_USER+7;
-  LM_DONE     = LM_USER+11;
-  LM_DESTROY  = LM_USER+13;
-  LM_LOADED   = LM_USER+17;
-  LM_SENT     = LM_USER+19;
-  LM_LOGMSG   = LM_USER+23; { 29.04.2020 /bc }
-  LM_THREAD   = LM_USER+29; { 01.05.2020 /bc }
-  LM_CALLBACK = LM_USER+31; { 02.05.2020 /bc }
+  LM_CREATE    = LM_USER+1;
+  LM_LISTEN    = LM_USER+3;
+  LM_ACCEPT    = LM_USER+5;
+  LM_WORKING   = LM_USER+7;
+  LM_DONE      = LM_USER+11;
+  LM_DESTROY   = LM_USER+13;
+  LM_LOADED    = LM_USER+17;
+  LM_SENT      = LM_USER+19;
+  LM_LOGMSG    = LM_USER+23; { 29.04.2020 /bc }
+  LM_THREAD    = LM_USER+29; { 01.05.2020 /bc }
+  LM_CALLBACK  = LM_USER+31; { 02.05.2020 /bc }
+  LM_SAVEFILE  = LM_USER+37; { 26.08.2022 /bc }
+  LM_LOGTODB   = LM_USER+41;
+  LM_RESERVED1 = LM_USER+43;
+  LM_RESERVED2 = LM_USER+47;
   { result codes from functions, more flexible than boolean }
   HR_OK = 0;
   HR_ERROR = -1;
