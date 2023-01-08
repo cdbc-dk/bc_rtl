@@ -1,0 +1,248 @@
+object fraSettings: TfraSettings
+  Left = 0
+  Height = 273
+  Top = 0
+  Width = 502
+  ClientHeight = 273
+  ClientWidth = 502
+  TabOrder = 0
+  DesignLeft = 546
+  DesignTop = 202
+  object sbxMain: TScrollBox
+    Left = 0
+    Height = 273
+    Top = 0
+    Width = 502
+    HorzScrollBar.Page = 493
+    VertScrollBar.Increment = 26
+    VertScrollBar.Page = 264
+    VertScrollBar.Smooth = True
+    Align = alClient
+    ClientHeight = 271
+    ClientWidth = 500
+    TabOrder = 0
+    object gbxStorage: TGroupBox
+      Left = 0
+      Height = 144
+      Top = 0
+      Width = 500
+      Align = alTop
+      Caption = ' Storage '
+      ClientHeight = 126
+      ClientWidth = 498
+      TabOrder = 0
+      object edtDataStorage: TLabeledEdit
+        Left = 60
+        Height = 29
+        Top = 5
+        Width = 433
+        Anchors = [akTop, akLeft, akRight]
+        EditLabel.Height = 17
+        EditLabel.Width = 36
+        EditLabel.Caption = 'Data:'
+        EditLabel.ParentColor = False
+        LabelPosition = lpLeft
+        TabOrder = 0
+        Text = '/home/bc'
+        OnClick = edtDataStorageClick
+      end
+      object edtBackupStorage: TLabeledEdit
+        Left = 60
+        Height = 29
+        Top = 40
+        Width = 433
+        Anchors = [akTop, akLeft, akRight]
+        EditLabel.Height = 17
+        EditLabel.Width = 53
+        EditLabel.Caption = 'Backup:'
+        EditLabel.ParentColor = False
+        LabelPosition = lpLeft
+        TabOrder = 1
+        Text = '/home/bc/Dropbox'
+        OnClick = edtBackupStorageClick
+      end
+      object chbAutoBackup: TCheckBox
+        Left = 8
+        Height = 21
+        Top = 75
+        Width = 147
+        Caption = 'Automatic backup'
+        TabOrder = 2
+      end
+      object rbtDaily: TRadioButton
+        Left = 168
+        Height = 21
+        Top = 75
+        Width = 57
+        Caption = 'Daily'
+        Checked = True
+        OnClick = rbtDailyClick
+        TabOrder = 3
+        TabStop = True
+      end
+      object rbtWeekly: TRadioButton
+        Left = 235
+        Height = 21
+        Top = 75
+        Width = 72
+        Caption = 'Weekly'
+        OnClick = rbtWeeklyClick
+        TabOrder = 4
+      end
+      object rbtMonthly: TRadioButton
+        Left = 315
+        Height = 21
+        Top = 75
+        Width = 79
+        Caption = 'Monthly'
+        OnClick = rbtMonthlyClick
+        TabOrder = 5
+      end
+      object lblLastB: TLabel
+        Left = 8
+        Height = 17
+        Top = 102
+        Width = 85
+        Caption = 'Last backup:'
+        ParentColor = False
+      end
+      object lblLback: TLabel
+        Left = 100
+        Height = 17
+        Top = 102
+        Width = 72
+        Caption = '01.01.1970'
+        ParentColor = False
+      end
+    end
+    object gbxEngine: TGroupBox
+      Left = 0
+      Height = 84
+      Top = 144
+      Width = 500
+      Align = alTop
+      Caption = ' Engine '
+      ClientHeight = 66
+      ClientWidth = 498
+      TabOrder = 1
+      object chbCachedUpd: TCheckBox
+        Left = 8
+        Height = 21
+        Top = 6
+        Width = 131
+        Caption = 'Cached updates'
+        TabOrder = 0
+      end
+      object edtCachedUpd: TLabeledEdit
+        Left = 340
+        Height = 29
+        Top = 4
+        Width = 48
+        EditLabel.Height = 17
+        EditLabel.Width = 185
+        EditLabel.Caption = 'Number of cached updates:'
+        EditLabel.ParentColor = False
+        LabelPosition = lpLeft
+        TabOrder = 1
+        Text = '3'
+      end
+      object lblEngineInfo: TLabel
+        Left = 8
+        Height = 17
+        Top = 36
+        Width = 184
+        Caption = 'Text search engine options:'
+        ParentColor = False
+      end
+      object chbCaseSensitive: TCheckBox
+        Left = 200
+        Height = 21
+        Top = 34
+        Width = 118
+        Caption = 'Case sensitive'
+        TabOrder = 2
+      end
+      object chbMatchAll: TCheckBox
+        Left = 328
+        Height = 21
+        Top = 34
+        Width = 163
+        Caption = 'Match all occurences'
+        Checked = True
+        State = cbChecked
+        TabOrder = 3
+      end
+      object btnService: TSpeedButton
+        Left = 463
+        Height = 30
+        Hint = 'Insert choice page in diary...'
+        Top = 4
+        Width = 30
+        Anchors = [akTop, akRight]
+        Flat = True
+        Images = ImageList1
+        ImageIndex = 0
+        OnClick = btnServiceClick
+        ShowHint = True
+        ParentShowHint = False
+      end
+    end
+    object pnlBottom: TPanel
+      Left = 0
+      Height = 43
+      Top = 228
+      Width = 500
+      Align = alClient
+      ClientHeight = 43
+      ClientWidth = 500
+      TabOrder = 2
+      object btnOk: TBitBtn
+        Left = 409
+        Height = 30
+        Top = 5
+        Width = 85
+        Anchors = [akTop, akRight]
+        Default = True
+        DefaultCaption = True
+        Kind = bkOK
+        ModalResult = 1
+        OnClick = btnOkClick
+        TabOrder = 0
+      end
+      object btnCancel: TBitBtn
+        Left = 321
+        Height = 30
+        Top = 5
+        Width = 85
+        Anchors = [akTop, akRight]
+        Cancel = True
+        DefaultCaption = True
+        Kind = bkCancel
+        ModalResult = 2
+        OnClick = btnCancelClick
+        TabOrder = 1
+      end
+    end
+  end
+  object dlgOpenDir: TSelectDirectoryDialog
+    InitialDir = '/home/bc'
+    Left = 432
+    Top = 61
+  end
+  object dlgOpenFile: TOpenDialog
+    Filter = 'All files (*.*)|*.*'
+    InitialDir = '/home/bc'
+    Left = 397
+    Top = 56
+  end
+  object ImageList1: TImageList
+    Left = 460
+    Top = 87
+    Bitmap = {
+      4C7A010000001000000010000000560000000000000078DA636018FAE0ED11CB
+      679F4F5AFF07E14FC72DFF7F3868FAFFED6EC3FFAFB6EAFE7FBE5EF3FF9395AA
+      FF1F2E56FC7F6FAEECFFDBD325FFDF9C24FAFF52AFC83374FDC4EABD311155FF
+      A8FF47FD3F540100E793E41C
+    }
+  end
+end

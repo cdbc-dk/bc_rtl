@@ -1,94 +1,82 @@
-unit semaphore;
- 
+unit bc_semaphore;
 {$mode objfpc}{$H+}
- 
+{$interfaces corba}
+{.$define debug}
 interface
- 
-uses
-  Contnrs,
-  Classes,
-  SysUtils;
+uses Classes, SysUtils, Contnrs,bc_mtlinklist;
  
 type
- 
-  { TSemaphore }
- 
-  TSemaphore = class
+  { TbcSemaphore }
+  TbcSemaphore = class
   private
     fMaxPermits: Cardinal;
-    fPermits: Cardinal;
+    fPermits: cardinal;
     fLock: TRTLCriticalSection;
-    FBlockQueue: Contnrs.TQueue;
-    function GetWaitCount: Cardinal;
+    fBlockQueue: Contnrs.TQueue;
+    function GetWaitCount: cardinal;
   public
     procedure Wait;
-    procedure Post;
+    procedure Signal; { used to be post! }
     function Used: Boolean;
-    constructor Create(MaxPermits: Cardinal);
+    constructor Create(MaxPermits: cardinal);
     destructor Destroy; override;
-    property WaitCount: Cardinal read GetWaitCount;
-    property Permits: Cardinal read fPermits;
-    property MaxPermits: Cardinal read fMaxPermits;
+    property WaitCount: cardinal read GetWaitCount;
+    property Permits: cardinal read fPermits;
+    property MaxPermits: cardinal read fMaxPermits;
   end;
  
  
 implementation
- 
-{ TSemaphore }
- 
-function TSemaphore.GetWaitCount: Cardinal;
+uses bc_errorlog;
+{ TbcSemaphore }
+function TbcSemaphore.GetWaitCount: cardinal;
 begin
-  EnterCriticalSection(fLock);
-  try
-    Result:= FBlockQueue.Count;
-  finally
-    LeaveCriticalSection(fLock);
-  end;
+  EnterCriticalSection(fLock); try Result:= fBlockQueue.Count; finally LeaveCriticalSection(fLock); end;
 end;
  
-procedure TSemaphore.Wait;
+procedure TbcSemaphore.Wait;
 var
-  aWait: Boolean;
+  aWait: boolean;
   aEvent: PRTLEvent;
 begin
-  //writeln('Sem:');
-  //writeln('  locking...');
+  {$ifdef debug} ErrorLog.LogLn(format('[%s]TbcSemaphore.Wait  : locking... ThreadID = %d',[timetostr(now),ThreadID])); {$endif}
   EnterCriticalSection(fLock);
   try
-    //writeln('  locked');
+    {$ifdef debug} ErrorLog.LogLn(format('[%s]TbcSemaphore.Wait  : locked     ThreadID = %d',[timetostr(now),ThreadID])); {$endif}
     if (fPermits > 0) then begin
-      Dec(fPermits);
-      aWait:= False;
+      dec(fPermits);
+      aWait:= false;
     end else begin
       aEvent:= RTLEventCreate;
-      FBlockQueue.Push(aEvent);
+      fBlockQueue.Push(aEvent);
       aWait:= True;
     end;
   finally
     LeaveCriticalSection(fLock);
   end;
   if aWait then begin
-    //writeln('  waiting...');
+    {$ifdef debug} ErrorLog.LogLn(format('[%s]TbcSemaphore.Wait  : waiting... ThreadID = %d',[timetostr(now),ThreadID])); {$endif}
     RTLeventWaitFor(aEvent);
     RTLEventDestroy(aEvent);
   end;
-  //writeln('  aquired');
+  {$ifdef debug} ErrorLog.LogLn(format('[%s]TbcSemaphore.Wait  : acquired    ThreadID = %d',[timetostr(now),ThreadID])); {$endif}
 end;
  
-procedure TSemaphore.Post;
+procedure TbcSemaphore.Signal;
 begin
   EnterCriticalSection(fLock);
   try
-    if FBlockQueue.Count > 0 then
-      RTLEventSetEvent(PRTLEvent(FBlockQueue.Pop))
+    if fBlockQueue.Count > 0 then
+      RTLEventSetEvent(PRTLEvent(fBlockQueue.Pop))
     else
-      Inc(fPermits);
+      inc(fPermits);
   finally
     LeaveCriticalSection(fLock);
   end;
+  {$ifdef debug} ErrorLog.LogLn(format('[%s]TbcSemaphore.Signal: released    ThreadID = %d',[timetostr(now),ThreadID])); {$endif}
 end;
  
-function TSemaphore.Used: Boolean;
+function TbcSemaphore.Used: boolean;
 begin
   EnterCriticalSection(fLock);
   try
@@ -98,20 +86,20 @@ begin
   end;
 end;
  
-constructor TSemaphore.Create(MaxPermits: Cardinal);
+constructor TbcSemaphore.Create(MaxPermits: Cardinal);
 begin
   fMaxPermits := MaxPermits;
   fPermits := MaxPermits;
   InitCriticalSection(fLock);
-  FBlockQueue:= TQueue.Create;
+  fBlockQueue:= TQueue.Create;
 end;
  
-destructor TSemaphore.Destroy;
+destructor TbcSemaphore.Destroy;
 begin
   DoneCriticalSection(fLock);
-  FBlockQueue.Free;
+  fBlockQueue.Free;
   inherited Destroy;
 end;
- 
+{$interfaces com}
 end.
  

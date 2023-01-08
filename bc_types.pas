@@ -50,21 +50,30 @@ const
 
 type
   { *** TVersion *** }
+
+  { TVersion }
+
   TVersion = class
   private
     fVersionNumber: ptruint;
-    function get_AsPtrUint: ptruint;
+    function get_AsInteger: ptruint;
+    function get_AsPtrUint: ptruint; deprecated;
     function get_AsString: string;
     function EncodeFromString(const aVersionString: string): ptruint;
     function DecodeToString(const aVersionNumber: ptruint): string;
+    procedure set_AsInteger(aValue: ptruint);
+    procedure set_AsString(aValue: string);
   public
     constructor Create(const aVersionNumber: ptruint); overload;
     constructor Create(const aUnitVersion: string); overload;
     destructor Destroy; override;
+    procedure Increment(const aDate: string);
     class function VersionNumberToString(const aVersionNumber: ptruint): string;
     class function VersionStringToPtrUint(const aVersionString: string): ptruint;
-    property AsPtrUint: ptruint read get_AsPtrUint;
-    property AsString: string read get_AsString;
+    property AsInteger: ptruint read get_AsInteger write set_AsInteger;
+    property AsPtrUint: ptruint read get_AsPtrUint; deprecated;
+    { takes a string of format '01.01.01.1970' }
+    property AsString: string read get_AsString write set_AsString;
   end; { TVersion }
 
   { Notification operations : }
@@ -148,6 +157,11 @@ begin
   Result:= fVersionNumber;
 end;
 
+function TVersion.get_AsInteger: ptruint;
+begin
+  Result:= fVersionNumber;
+end;
+
 function TVersion.get_AsString: string;
 begin
   Result:= DecodeToString(fVersionNumber);
@@ -185,6 +199,16 @@ begin
            StringWorkshop.IntToStrPad0(VRec.vrBuild_Number);
 end;
 
+procedure TVersion.set_AsInteger(aValue: ptruint);
+begin
+  fVersionNumber:= aValue;
+end;
+
+procedure TVersion.set_AsString(aValue: string);
+begin
+  fVersionNumber:= EncodeFromString(aValue);
+end;
+
 constructor TVersion.Create(const aVersionNumber: ptruint);
 begin
   inherited Create;
@@ -200,6 +224,16 @@ end;
 destructor TVersion.Destroy;
 begin
   inherited Destroy;
+end;
+
+procedure TVersion.Increment(const aDate: string);
+var
+  VRec: PVersionRec;
+  S: string;
+begin
+  VRec:= PVersionRec(@fVersionNumber);
+  S:= StringWorkshop.IntToStrPad0(VRec^.vrMajor_Number+1) + '.' + aDate;
+  fVersionNumber:= EncodeFromString(S);
 end;
 
 class function TVersion.VersionNumberToString(const aVersionNumber: ptruint): string;

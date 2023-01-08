@@ -78,9 +78,12 @@ begin
 end;
 
 function TIsoDate.get_AsString: string;
+var
+  S,Res: ansistring;
 begin
-//  Result:= datetostr(fDate); { changed 05.01.2014 /bc }
-  DateTimeToString(Result,'dd"."mm"."yyyy',fDate,FormatSettings);
+  S:= 'dd"."mm"."yyyy';
+  DateTimeToString(Res,S,fDate,FormatSettings); { this compiles with or without longstrings on $H+ }
+  Result:= Res;
 end;
 
 function TIsoDate.get_AsDate: TDateTime;
@@ -88,14 +91,24 @@ begin
   Result:= fDate;
 end;
 
-function TIsoDate.Get_Day: word;
+function TIsoDate.get_AsStringISO: string;
 begin
-  Result:= word(fDay);
+  Result:= YearAsString+'-'+MonthAsString+'-'+DayAsString;
+end;
+
+function TIsoDate.get_AsStringShort: string;
+begin
+  Result:= DayAsString+'.'+MonthAsString+'.'+get_YearAsStringShort;
+end;
+
+function TIsoDate.get_Day: word;
+begin
+  Result:= fDay;
 end;
 
 function TIsoDate.get_DayAsString: string;
 begin
-  Result:= fDay.ToString;
+  Result:= bcToStr(fDay);
 end;
 
 function TIsoDate.Get_DayNumber: word;
@@ -110,7 +123,8 @@ end;
 
 function TIsoDate.get_WeekNumberAsString: string;
 begin
-  Result:= fIsoWeekNumber.ToString;
+  if fIsoWeekNumber < 10 then Result:= '0'+fIsoWeekNumber.ToString
+  else Result:= fIsoWeekNumber.ToString;
 end;
 
 function TIsoDate.Get_IsoYear: word;
@@ -120,12 +134,12 @@ end;
 
 function TIsoDate.Get_Month: word;
 begin
-  Result:= word(fMonth);
+  Result:= fMonth;
 end;
 
 function TIsoDate.get_MonthAsString: string;
 begin
-  Result:= fMonth.ToString;
+  Result:= bcToStr(fMonth);
 end;
 
 function TIsoDate.Get_Year: word;
@@ -135,12 +149,20 @@ end;
 
 function TIsoDate.get_YearAsString: string;
 begin
-  Result:= fYear.ToString;
+  Result:= bcToStr(fYear);
+end;
+
+function TIsoDate.get_YearAsStringShort: string;
+var
+  I:integer;
+begin
+  if fYear > 2000 then I:= fYear-2000 else I:= fYear-1900; { crude but effective }
+  Result:= bcToStr(I);
 end;
 
 function TIsoDate.GetDayName: string;
 begin
-  Result:= DayNames[fDayNumber];
+  Result:= bcEncodeUTF8(DayNames[fDayNumber],CPISO_8859_15); { western europe }
 end;
 
 {There are a couple of things to point out right away, I think.
@@ -234,8 +256,8 @@ var
   Rem: ptrint; // remainder
 begin
   fYear:= 0; fMonth:= 0; fDay:= 0;             { 1. initialize values first }
-  fYear:= AValue div Year_Modifier;            { 2. then extract year-part }
-  Rem:= AValue mod Year_Modifier;              { 3. then save what remains }
+  fYear:= aValue div Year_Modifier;            { 2. then extract year-part }
+  Rem:= aValue mod Year_Modifier;              { 3. then save what remains }
   fMonth:= Rem div Month_Modifier;             { 4. then extract month-part }
   fDay:= Rem mod Month_Modifier;               { 5. then extract day-part }
   fDate:= EncodeDate(word(fYear),
@@ -247,9 +269,17 @@ begin
 end;
 
 procedure TIsoDate.set_AsString(const aValue: string);
-var D: TDateTime;
+var
+  T,F: word;
+  D: TDateTime;
 begin
-  D:= StrToDate(aValue,'.');
+  F:= bcDetectDateFormat(aValue);
+  if Length(aValue) <= 8 then T:= STRSHORT
+  else begin
+    if F = DATE_ISO then T:= STRISO
+    else T:= STRLONG;
+  end;
+  D:= bcStrToDate(aValue,F,T); //  D:= StrToDate(aValue,'.');
   set_AsDate(D);
 end;
 
@@ -262,6 +292,18 @@ begin
     fIsoWeekOneStartDate:= GetIsoWeekOne(fYear);
     GetIsoWeek(fDate);
   end;
+end;
+
+procedure TIsoDate.set_AsStringISO(aValue: string);
+begin
+  { set_AsString calls bcStrToDate(str,format,type), that caters for all textual dates }
+  set_AsString(aValue);
+end;
+
+procedure TIsoDate.set_AsStringShort(aValue: string);
+begin
+  { set_AsString calls bcStrToDate(str,format,type), that caters for all textual dates }
+  set_AsString(aValue);
 end;
 
 constructor TIsoDate.Create(aDay,aMonth,aYear: word);
