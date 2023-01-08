@@ -43,8 +43,10 @@ type
   { corba interfaces do not ref count, i.e: you free them yourself! }
   {$interfaces corba}  
   IGuardian = interface [SGUIDGuardian]
-    procedure Lock;   // api
-    procedure UnLock; // api
+    function BeginWrite: boolean; // api
+    procedure EndWrite;           // api
+    procedure Lock;               // api
+    procedure UnLock;             // api
   end; { IGuardian }
 
   { TGuardian is a global, that provides locking for threads }
@@ -65,7 +67,9 @@ type
     constructor Create;
     destructor Destroy; override;
     procedure Lock;
+    function BeginWrite: boolean; { impl. stolen from TSimpleRWSync in SysUtils }
     procedure UnLock;
+    procedure EndWrite; { impl. stolen from TSimpleRWSync in SysUtils }
     property Id: ptrint read getId write setId;
     property Version: TVersion read getVersion;
   end; { TGuardian }
@@ -133,6 +137,12 @@ begin
   {$endif}
 end;
 
+function TGuardian.BeginWrite: boolean;
+begin
+  LCLIntf.EnterCriticalSection(fLock); // enter the critical section
+  Result:= true;
+end;
+
 procedure TGuardian.UnLock;
 begin
   {$ifdef use_lcltype}
@@ -140,6 +150,11 @@ begin
   {$else}
     fLock.Release;
   {$endif}
+end;
+
+procedure TGuardian.EndWrite;
+begin
+  LCLIntf.LeaveCriticalSection(fLock); // leave the critical section
 end;
 
 initialization

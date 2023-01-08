@@ -29,17 +29,19 @@ type
     fHandle: ptrint;
     fOnCallback: TThreadCallback; { 25.08.2022 /bc }
     function GetMsg(var aHandle: ptrint;var aWParam: ptrint;var aLParam: ptrint;var aSParam: string): ptrint; { internal }
-    function get_Throttle: word; { 25.08.2022 /bc }
-    procedure set_Throttle(aValue: word); { 25.08.2022 /bc }
-    procedure DoLogMsg(const aLogLine: string); virtual;
+    function get_Throttle: word; virtual; { 25.08.2022 /bc }
+    procedure set_Throttle(aValue: word); virtual; { 25.08.2022 /bc }
+    procedure DoLogMsg(aMsg: ptrint;const aLogLine: string); virtual;
     procedure DoOnCallback; virtual;{ 02.05.2020 /bc }
-    procedure Execute; virtual; //override;
+    procedure Execute; override;
     { this one is to be overridden instead of execute }
     procedure ExecuteNew(aHandle,aMsg,aWParam,aLParam: ptrint;aSParam: string); virtual;
+    procedure TearDown; virtual;
   public
     constructor Create(const aHandle: ptrint;const aWaitTimeout: ptrint); { 02.05.2020 /bc }
     destructor Destroy; override;
     { API }
+    function ThreadMsgInfo: string; virtual; { call this to get the message names i understand }
     procedure PostMsg(aMsg: TbcMessage); overload;
     procedure PostMsg(aHandle,aMsg,aWParam,aLParam: ptrint;aSParam: string); overload;
     property MsgWaitTimeout: ptrint read fWaitTimeout write fWaitTimeout;
@@ -53,17 +55,23 @@ type
 var
   AppQGuard: TGuardian;
 { Important: remember to enable "cthreads" in the project file }
-//function ErrorLogMT: TMsgQThread;
+//function MsgQThread: TMsgQThread;
 
 implementation
 //uses bc_errorlog;
 
-var Singleton: TMsgQThread;
+var
+  Singleton: TMsgQThread;
+  Started: boolean;
 
 { factory }
-function ErrorLogMT: TMsgQThread;
+function MsgQThread: TMsgQThread;
 begin
-  if not assigned(Singleton) then Singleton:= TMsgQThread.Create(-1,1000);
+  if not assigned(Singleton) then begin
+    Singleton:= TMsgQThread.Create(-1,1000);
+    Singleton.Start; { remember to get us going }
+    Started:= true;
+  end;
   Result:= Singleton;
 end;
 
@@ -113,9 +121,9 @@ begin
   end;
 end;
 
-procedure TMsgQThread.DoLogMsg(const aLogLine: string);
+procedure TMsgQThread.DoLogMsg(aMsg: ptrint;const aLogLine: string);
 begin
-
+  // for now do nothing
 end;
 
 procedure TMsgQThread.DoOnCallback; { 02.05.2020 /bc }
@@ -131,25 +139,18 @@ begin
   fWaitEvent:= RTLEventCreate;                        { initialize wait object }
   fWaitTimeout:= aWaitTimeout;                            { initialize timeout }
   fThrottle:= 5;                                   { right smack in the middle }
-  Start;                                        { don't forget to get us going }
+//  Start;                                        { don't forget to get us going }
 end;
 
 destructor TMsgQThread.Destroy;
-var Msg: TbcMessage;
-begin 
-  try
-    while not fMsgQueue.IsEmpty do begin
-      Msg:= fMsgQueue.Dequeue;   { TbcQueue locks, any messages left in queue? }
-      Msg.Free;                                              {  then free them }
-    end;
-    FreeAndNil(fMsgQueue);                                             { Done! }
-    RTLeventdestroy(fWaitEvent);                        { finalize wait object }
-  except on E:Exception do
-    begin
-      // for now do nothing
-    end;
-  end;
+begin
+  TearDown;                                { dismantles our part of the thread }
   inherited Destroy;                                   { call ancester destroy }
+end;
+
+function TMsgQThread.ThreadMsgInfo: string;
+begin
+  Result:= 'LM_LOGMSG,LM_DONE,LM_CALLBACK';
 end;
 
 procedure TMsgQThread.Execute;
@@ -160,13 +161,15 @@ begin
   while not Terminated do try                          { enter our thread-loop }
     case GetMsg(lHandle,lWParam,lLParam,lSParam) of       { check messagequeue }
       LM_LOGMSG  : begin                    { we need to write to the log-file }
-                     DoLogMsg(MsgToStr(LM_LOGMSG)+' '+lWParam.ToString+' '+lLParam.ToString+' '+lSParam);
+                     fHandle:= lHandle;                      { just to be sure }
+                     DoLogMsg(LM_LOGMSG,MsgToStr(LM_LOGMSG)+' '+lWParam.ToString+' '+lLParam.ToString+' '+lSParam);
                    end;
       LM_DONE    : begin                      { we've been terminated, bye bye }
-                     DoLogMsg('TMsgQThread.Execute: Received LM_DONE, terminating');
+                     DoLogMsg(LM_DONE,'TMsgQThread.Execute: Received LM_DONE, terminating');
                      Terminate;                                         { quit }
                    end;
       LM_CALLBACK: begin
+                     fHandle:= lHandle;                      { just to be sure }
                      DoOnCallback; { call the callback function with self as parameter }
                    end;
       else         begin { this condition basically acts like a "fall through" }
@@ -176,7 +179,7 @@ begin
     Sleep(25*fThrottle);    { take a short breather, 0..250 ms, in 25 ms steps }
   except on E:Exception do
     begin
-
+      // add the exception to a stringlist...
     end;
   end;
 end;
@@ -188,6 +191,23 @@ begin
   if not Terminated then begin
 //    DoLogMsg('Hello from "ExecuteNew" '+aWParam.ToString+' '+aLParam.ToString+' '+aSParam);
 /// do something ///
+  end;
+end;
+
+procedure TMsgQThread.TearDown;
+var Msg: TbcMessage;
+begin
+  try
+    while not fMsgQueue.IsEmpty do begin
+      Msg:= fMsgQueue.Dequeue;   { TbcQueue locks, any messages left in queue? }
+      Msg.Free;                                              {  then free them }
+    end;
+    FreeAndNil(fMsgQueue);                                             { Done! }
+    RTLeventdestroy(fWaitEvent);                        { finalize wait object }
+  except on E:Exception do
+    begin
+      // for now do nothing
+    end;
   end;
 end;
 
@@ -207,6 +227,7 @@ end;
 
 initialization
   Singleton:= nil;                              { gets created on demand (jit) }
+  Started:= false;                                           { just a reminder }
   AppQGuard:= TGuardian.Create;                             { gets created now }
 finalization
 //  Singleton.Terminate;                          { terminate the running thread }

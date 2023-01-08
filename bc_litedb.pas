@@ -51,14 +51,23 @@ type
     function get_LastErrorDesc: string;                   { 05.06.2020 /bc }
     procedure set_DbName(aValue: string); //*
   public
+    { set it up, specify databasename later }
     constructor Create; overload;
+    { set it up with specific databasename }
     constructor Create(const aDatabaseName: string); overload;
+    { tear down the lot, bye }
     destructor Destroy; override;
+    { connect to a database with specified filename }
     function Connect(const aFilename: string): boolean; overload;
+    { connect to a known database, ie: dbname <> '' }
     function Connect: boolean; overload;                  { 08.06.2012 /bc }
+    { disconnect queries, transaction & connection }
     procedure DisConnect;
+    { writing: insert, update & delete, works on simple tables ONLY! Takes a SQL-statement to execute }
     procedure RunSQL(const aStatement: string); { writing: insert, update & delete }
+    { reading: select, doesn't support blobs, copies fieldnames and data to the memdataset }
     function QuerySQL(const aStatement: string; aMemDataSet: TDataset): boolean; { reading: select }
+    { does what the name says, returns the latest inserted id }
     property LastInsertedId: int64 read get_LastInsertedId; { 25.07.2022 /bc }
     property DbName: string read fDbName write set_DbName;
     property Connected: boolean read get_Connected;
@@ -200,7 +209,7 @@ begin
   end;
 end;
 
-{ disconnect query, transaction & connection }
+{ disconnect queries, transaction & connection }
 procedure TLiteDb.DisConnect;
 begin
   if fExec.Active then fExec.Close;
@@ -209,17 +218,18 @@ begin
   if fDb.Connected then fDb.Close;
 end;
 
-{ writing: insert, update & delete, works on simple tables ONLY! }
+{ writing: insert, update & delete, works on simple tables ONLY! Takes a SQL-statement to execute }
 procedure TLiteDb.RunSQL(const aStatement: string); { writing: insert, update & delete }
 begin
   if not fTrans.Active then fTrans.StartTransaction;
   try
+    fExec.Close;
     fExec.SQL.Text:= aStatement;
     fExec.ExecSQL;
   finally fTrans.Commit; end; { or fTrans.CommitRetaining; advice from 'rvk' }
 end;
 
-{ does what the name says }
+{ does what the name says, returns the latest inserted id }
 function TLiteDb.get_LastInsertedId: int64;
 begin
   Result:= fDb.GetInsertID;
@@ -231,7 +241,7 @@ begin
   Result:= fDb.GetConnectionInfo(citServerVersionString);
 end;
 
-{ reading: select, doesn't support blobs }
+{ reading: select, doesn't support blobs, copies fieldnames and data to the memdataset }
 function TLiteDb.QuerySQL(const aStatement: string; aMemDataSet: TDataset): boolean; { reading: select }
 begin
   if not fTrans.Active then fTrans.StartTransaction;

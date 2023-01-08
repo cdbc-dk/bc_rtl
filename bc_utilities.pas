@@ -50,13 +50,26 @@ type
   bc_Collection = class(TCollection);
   TSearchCallback = TNotifyEvent;
   TIntArraySortCompare = function(Item1, Item2: ptruint): longint; // 24.06.2022
+  TCollectionItemIDCompare = function(anInt1, anInt2: ptruint): shortint;
+
+{ comparing routines }
+function CompareItemIds(anInt1, anInt2: ptruint): shortint;
 
 { sorting routines }
 procedure SortIntArray(var anArray: array of ptruint); // 25.06.2022
 
 { searching collections }
+{ bcBinarySearchCollection looks for a matching TCollectionItem.ID, using a binary algorithm,
+  optional user provided compare function, otherwise uses a failsafe. returns -1 on not found }
+function bcBinarySearchCollection(aValue: ptrint;aCollection: TCollection;aCompare: TCollectionItemIDCompare): ptrint;
 function bcBinarySearch(aValue: ptrint;aCollection: TCollection): ptrint;
+{ bcLinearSearchCollection looks for a matching TCollectionItem.ID, using a linear algorithm,
+  optional user provided compare function, otherwise uses a failsafe. returns -1 on not found }
+function bcLinearSearchCollection(aValue: ptrint;aCollection: TCollection;aCompare: TCollectionItemIDCompare): ptrint;
 function bcLinearSearch(aValue: ptrint;aCollection: TCollection): ptrint;
+{ bcSearchCollection looks for a matching TCollectionItem.ID, uses linear or binary algorithm,
+  optional user provided compare function, otherwise uses a failsafe. returns -1 on not found }
+function bcSearchCollection(aValue: ptrint;aCollection: TCollection;aCompare: TCollectionItemIDCompare): ptrint;
 function bcSearch(aValue: ptrint;aCollection: TCollection): ptrint;
 function bcSearchEx(aValue: ptrint;aCollection: TCollection;aCallback: TSearchCallback): ptrint;
 
@@ -68,8 +81,13 @@ function DecodePtrUint(const I: ptruint): TIntRecord;
 { writes the contents of stream 2 to the end of stream 1, with or without a
   separator ~ #10' <----->'#10, 20.08.2022 /bc}
 function ConcatenateStreams(aStream1, aStream2: TStream;WithSeparator: boolean = true): boolean;
+{ bcLoadFromFileUTF8 loads a stringlist (tstrings) from file and if necessary, converts it to utf8 }
+procedure bcLoadFromFileUTF8(aStrings: TStrings;const aFilename: string);
+{ bcSaveToFileUTF8 saves a stringlist (tstrings) to a file and writes an utf8bom }
+procedure bcSaveToFileUTF8(aStrings: TStrings;const aFilename: string);
 
 implementation
+uses bc_advstring;
 const
   { modifiers for date calculations }
   Year_Mod  = $100000;{ ~ 1048576 }
@@ -77,7 +95,9 @@ const
   Day_Mod   = $100;   { ~ 256 }
   { Version just get added on. }
 
-var lSearchCallback: TSearchCallback;
+var
+  lSearchCallback: TSearchCallback;
+  bcUTF8bom: string = #$ef#$bb#$bf;
 { function prototype for sorting
   TListSortCompare = function(Item1, Item2: pointer): integer;
   TIntArraySortCompare = function(Item1, Item2: ptruint): longint; }
@@ -142,6 +162,14 @@ begin
   until L >= R;
 end; { QuickSortIntArray }
 
+function CompareItemIds(anInt1, anInt2: ptruint): shortint;
+{ 1 = anInt1 > anInt2; 0 equal; -1 = anInt1 < anInt2 }
+begin
+  if anInt1 > anInt2 then Result:= 1
+  else if anInt1 < anInt2 then Result:= -1
+  else Result:= 0;
+end;
+
 procedure SortIntArray(var anArray: array of ptruint);
 begin
   if length(anArray) < 2 then exit; // well duhh, safety check
@@ -193,7 +221,34 @@ begin
  until L >= R;
 end;  
 *)
-  
+
+function bcBinarySearchCollection(aValue: ptrint; aCollection: TCollection;aCompare: TCollectionItemIDCompare): ptrint;
+var
+  Left, Right, Mid: ptrint;
+  MidKey: TCollectionItem;
+begin
+  Result:= -1; // hence the ptrint                 ok
+  if not assigned(aCompare) then aCompare:= @CompareItemIds; { well then we use a failsafe }
+  Left:= 0;                                     // low
+  Right:= aCollection.Count-1;                  // high
+  while (Left <= Right) do begin                // ok
+    Mid:= ((Left + Right) div 2);               // mid index
+    MidKey:= aCollection.Items[Mid];            // searchkey
+    if assigned(MidKey) then begin
+      {$ifdef debug} if assigned(lSearchCallback) then lSearchCallback(MidKey); {$endif}
+      { compare values  1 = anInt1 > anInt2; 0 equal; -1 = anInt1 < anInt2 }
+      case aCompare(aValue,MidKey.ID) of
+        -1: Right:= (Mid - 1);                    { ok, we're in the lower half }
+        0 : begin                                 { ok, we've found it, }
+              Result:= Mid;                       { return index and }
+              break;                              { exit stage left }
+            end;
+        1 : Left:= (Mid + 1);                     { ok, we're in the upper half }
+      end; { case }
+    end; { assigned }
+  end; { while }
+end; { bcBinarySearchCollection }
+
 { search for an item in a sorted list/array/collection, if not found ~ result = -1
   on very big datasets, it'll need around 20 passes, so on datasets with < 20 items
   a linear search will be quicker }
@@ -222,6 +277,24 @@ begin
   end;
 end; { bcBinarySearch }
 
+function bcLinearSearchCollection(aValue: ptrint; aCollection: TCollection;aCompare: TCollectionItemIDCompare): ptrint;
+var
+  Idx: ptrint;
+  Item: TCollectionItem;
+begin
+  Result:= -1;
+  if not assigned(aCompare) then aCompare:= @CompareItemIds; { well then we use a failsafe }
+  for Idx:= 0 to aCollection.Count-1 do begin
+    Item:= aCollection.Items[Idx];
+    if assigned(Item) then begin
+      if aCompare(aValue,Item.ID) = 0 then begin
+        Result:= Idx;
+        break;
+      end;
+    end;
+  end;
+end; { bcLinearSearchCollection }
+
 function bcLinearSearch(aValue: ptrint;aCollection: TCollection): ptrint;
 var Idx: ptrint;
 begin
@@ -233,6 +306,17 @@ begin
     end;
   end;
 end;
+
+function bcSearchCollection(aValue: ptrint; aCollection: TCollection;aCompare: TCollectionItemIDCompare): ptrint;
+begin
+  Result:= -1;
+  if not assigned(aCompare) then aCompare:= @CompareItemIds; { failsafe }
+  if aCollection.Count < 20 then begin
+    Result:= bcLinearSearchCollection(aValue,aCollection,aCompare); //bcLinearSearch(aValue,aCollection);
+  end else begin
+    Result:= bcBinarySearchCollection(aValue,aCollection,aCompare); //bcBinarySearch(aValue,aCollection);
+  end;
+end; { bcSearchCollection }
 
 function bcSearch(aValue: ptrint; aCollection: TCollection): ptrint;
 begin
@@ -298,6 +382,38 @@ begin
   aStream2.Position:= 0;
   aStream1.Position:= 0;
 end;
+
+procedure bcLoadFromFileUTF8(aStrings: TStrings; const aFilename: string);
+var
+  Fs: TFileStream;
+  Buf: string;
+  Cp: word;
+begin
+  Fs:= TFileStream.Create(aFilename,fmOpenRead or fmShareDenyNone);
+  try
+    SetLength({%H-}Buf,3);
+    Fs.Read(Buf[1],3);
+    if Buf = bcUTF8bom then begin
+      aStrings.LoadFromStream(Fs);
+    end else begin
+      Fs.Seek(0,soFromBeginning);
+      aStrings.LoadFromStream(Fs);
+      Cp:= bcGuessEncoding(aStrings.Text);
+      aStrings.Text:= bcEncodeUTF8(aStrings.Text,Cp);
+    end;
+  finally Fs.Free; end;
+end; { bcLoadFromFileUTF8 }
+
+procedure bcSaveToFileUTF8(aStrings: TStrings; const aFilename: string);
+var
+  Fs: TFileStream;
+begin
+  Fs:= TFileStream.Create(aFilename,fmCreate or fmOpenWrite);
+  try
+    Fs.Write(bcUTF8bom[1],length(bcUTF8bom));
+    aStrings.SaveToStream(Fs);
+  finally Fs.Free; end;
+end; { bcSaveToFileUTF8 }
 
 initialization
   lSearchCallback:= nil;

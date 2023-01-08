@@ -72,7 +72,7 @@ type
   end; { TObserver }
 
 implementation
-uses RtlConsts;
+//uses RtlConsts;
 
 { *** TObserver *** }
 constructor TObserver.Create(const anActiveobject: TObject);
@@ -88,8 +88,6 @@ begin
 end;
 
 procedure TObserver.FPOObservedChanged(aSender: TObject;Operation: TFPObservedOperation;Data: Pointer);
-var
-  PObsRec: PObserverRec;
 begin
   { example code to be overridden! }
   raise EObserver.Create('ERROR: TObserver Method "FPOObservedChanged" not overridden!');

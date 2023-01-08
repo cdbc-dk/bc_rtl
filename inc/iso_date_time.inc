@@ -1,6 +1,17 @@
 {%MainUnit bc_datetime.pas}
 { implementation: (c)cdbc 01.03.2021 /bc }
 
+function TIsoDateTime.get_AsStringShort: string;
+begin
+  Result:= fDate.AsStringShort+' '+fTime.AsStringShort;
+end;
+
+procedure TIsoDateTime.set_AsStringShort(aValue: string);
+begin
+  //todo: get date part, separator=' ', get time part hh:mm
+  // now set_date & set_time
+end;
+
 { *** TIsoDateTime *** }
 function TIsoDateTime.get_Date: IIsoDate;
 begin
@@ -14,7 +25,7 @@ end;
 
 function TIsoDateTime.get_AsString: string;
 begin
-  Result:= fDate.AsString+' - '+fTime.AsString;
+  Result:= fDate.AsString+' '+fTime.AsString;
 end;
 
 { returns datetime as iso formatted string }
@@ -56,6 +67,14 @@ begin
   inherited Destroy;
 end;
 
+{ part of AsDateTime property }
+function TIsoDateTime.GetDateTime: TDateTime;
+begin
+  Result:= EncodeDateTime(fDate.Year,fDate.Month,fDate.Day,
+                          fTime.Hours,fTime.Minutes,fTime.Seconds,fTime.MilliSeconds);
+end;
+
+{ part of AsDateTime property }
 procedure TIsoDateTime.SetDateTime(const aDateTime: TDateTime);
 begin
   fDate.AsDate:= aDateTime;

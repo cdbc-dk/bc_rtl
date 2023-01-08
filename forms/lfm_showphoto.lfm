@@ -1,0 +1,47 @@
+object frmShowPhoto: TfrmShowPhoto
+  Left = 340
+  Height = 549
+  Top = 131
+  Width = 851
+  Caption = 'Photo'
+  ClientHeight = 549
+  ClientWidth = 851
+  OnMouseWheel = FormMouseWheel
+  Position = poScreenCenter
+  LCLVersion = '2.2.4.0'
+  object Panel1: TPanel
+    Left = 0
+    Height = 549
+    Top = 0
+    Width = 851
+    Align = alClient
+    BevelInner = bvLowered
+    BevelWidth = 2
+    ClientHeight = 549
+    ClientWidth = 851
+    TabOrder = 0
+    object ScrollBox1: TScrollBox
+      Left = 4
+      Height = 541
+      Top = 4
+      Width = 843
+      HorzScrollBar.Page = 90
+      VertScrollBar.Page = 90
+      Align = alClient
+      ClientHeight = 539
+      ClientWidth = 841
+      TabOrder = 0
+      object Image1: TImage
+        Left = 0
+        Height = 539
+        Top = 0
+        Width = 841
+        Align = alClient
+        AutoSize = True
+        Center = True
+        Proportional = True
+        Stretch = True
+      end
+    end
+  end
+end

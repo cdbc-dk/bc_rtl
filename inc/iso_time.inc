@@ -6,6 +6,31 @@ function TIsoTime.get_AsInteger: ptrint;
 begin
   Result:= fIntTime; // 14.08.2022 new implementation, stored as milliseconds per day
 end;
+
+function TIsoTime.get_AsStringISO: string; { hh:mm:ss.mss }
+var H,M,S,MSec: word;
+begin
+  DecodeTime(fTime,H,M,S,MSec);
+  result:= bcToStr(H)+':'+
+           bcToStr(M)+':'+
+           bcToStr(S)+'.'+
+           bcToStr(MSec);
+end;
+
+function TIsoTime.get_AsStringLong: string; { hh.mm.ss }
+var H,M,S,MSec: word;
+begin
+  DecodeTime(fTime,H,M,S,MSec);
+  result:= bcToStr(H) + '.' + bcToStr(M) + '.' + bcToStr(S);
+end;
+
+function TIsoTime.get_AsStringShort: string; { hh.mm }
+var H,M,S,MSec: word;
+begin
+  DecodeTime(fTime,H,M,S,MSec);
+  result:= bcToStr(H) + '.' + bcToStr(M);
+end;
+
 { adds one hour according to summertime dates ~ }
 function TIsoTime.get_DaylightSavingTime: integer;
 begin
@@ -69,14 +94,9 @@ begin
   Result:= fTime;
 end;
 
-function TIsoTime.get_AsString: string;
-var H,M,S,MSec: word;
+function TIsoTime.get_AsString: string; { hh.mm.ss }
 begin
-  DecodeTime(fTime,H,M,S,MSec);
-  result:= bcToStr(H)+':'+
-           bcToStr(M)+':'+
-           bcToStr(S)+'.'+
-           bcToStr(MSec);
+  Result:= get_AsStringLong;
 end;
 
 procedure TIsoTime.set_AsInteger(const aValue: ptrint); //bm
@@ -106,6 +126,21 @@ begin
   end;
 end;
 
+procedure TIsoTime.set_AsStringISO(aValue: string); { hh:mm:ss.000 }
+begin
+  SetTimeRaw(bcStrToTime(aValue,STRISO,':'));
+end;
+
+procedure TIsoTime.set_AsStringLong(aValue: string); { hh.mm.ss }
+begin
+  SetTimeRaw(bcStrToTime(aValue,STRLONG,'.'));
+end;
+
+procedure TIsoTime.set_AsStringShort(aValue: string); { hh.mm }
+begin
+  SetTimeRaw(bcStrToTime(aValue,STRSHORT,'.'));
+end;
+
 procedure TIsoTime.set_AsTime(const aValue: TDateTime);
 var
   H,M,S,MSec: word;
@@ -121,6 +156,18 @@ begin
     end;
     fIntTime:= ((H*3600000)+(M*60000)+(S*1000)+MSec); { changed to include msecs //bm }
     fTime:= EncodeTime(H,M,S,MSec);
+  end;
+end;
+
+procedure TIsoTime.SetTimeRaw(const aValue: TDateTime);
+var
+  H,M,S,MSec: word;
+begin
+  if aValue <> fTime then begin
+    fTime:= aValue;
+    H:= 0; M:= 0; S:= 0; MSec:= 0;
+    DecodeTime(aValue,H,M,S,MSec);
+    fIntTime:= ((H*3600000)+(M*60000)+(S*1000)+MSec); { changed to include msecs //bm }
   end;
 end;
 
@@ -159,7 +206,7 @@ begin
 end;
 procedure TIsoTime.set_AsString(const Value: string);
 begin
-  set_AsTime(sysutils.StrToTime(Value));
+  SetTimeRaw(bcStrToTime(Value,STRLONG,'.'));
 end;
 
 procedure TIsoTime.set_Timezone(aValue: integer);

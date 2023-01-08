@@ -7,14 +7,14 @@
 *  Refactored: 25.03.2020 /bc Code cleanup.                                    *
 *              25.03.2020 /bc added guardian to tbcstack both global and fed   *
 *              10.05.2022 /bc added owned guardian to tbcqueue                 *
+*              28.11.2022 /bc relocated exception raising and added check for  *
+*                             empty queue before lock, in tbcqueue.de_queue :o)*
 *                                                                              *
 *                                                                              *
 *                                                                              *
 *******************************************************************************}
 unit bc_mtlinklist;
-
 interface
-
 uses
   Classes, SysUtils,
   syncobjs,
@@ -27,7 +27,7 @@ uses
 {$DEFINE UseNodeManager}
 
 const
-	UnitVersion = '3.10.05.2022';
+	UnitVersion = '4.28.11.2022';
   PageNodeCount = 30;
 
 type
@@ -152,7 +152,29 @@ type
     procedure Put(anObject: TObject); overload;
     function Get: TObject; overload;
   end;
-  
+
+type
+  { key / value record }
+  PKeyValueRec = ^TKeyValueRec;
+  TKeyValueRec = packed record
+    Key: ptrint;
+    Value: string[64];
+  end;
+
+  { TbcKeyValueList }
+  TbcKeyValueList = class(TbcSingleList)
+  protected
+    fLock: TGuardian;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    function Add(aKey: ptrint;const aValue: string): PKeyValueRec;
+    function FindKey(const aValue: string): ptrint;
+    function FindValue(aKey: ptrint): string;
+    procedure Delete(aKey: ptrint);
+    procedure ClearRecords;
+  end;
+
 implementation
 
 {===SingleNodeManager================================================}
@@ -270,6 +292,86 @@ begin
 end;
 {====================================================================}
 
+{===TbcKeyValueList====================================================}
+constructor TbcKeyValueList.Create;
+begin
+  inherited Create;
+  fLock:= bc_guardian.TGuardian.Create; { setup our own guardian sentinel }
+  MoveBeforeFirst; { reset cursor to start of list }
+end;
+
+destructor TbcKeyValueList.Destroy;
+begin
+  ClearRecords;
+  FreeAndNil(fLock); { teardown our sentinel }
+  inherited Destroy;
+end;
+
+function TbcKeyValueList.Add(aKey: ptrint; const aValue: string): PKeyValueRec;
+begin
+  fLock.Lock;
+  try
+    Result:= getmem(sizeof(TKeyValueRec));
+    Result^.Key:= aKey;
+    Result^.Value:= aValue;
+    InsertAfter(Result);
+  finally fLock.Unlock; end;
+end;
+
+function TbcKeyValueList.FindKey(const aValue: string): ptrint;
+begin
+  fLock.Lock;
+  try
+    Result:= -1;                                                     { not found }
+    MoveBeforeFirst;                                    { start at the beginning }
+    while MoveNext do begin                           { will stop at end of list }
+      if PKeyValueRec(Examine)^.Value = aValue then begin
+        Result:= PKeyValueRec(Examine)^.Key;              { found it, return key }
+        break;                                                      { we're done }
+      end;
+    end;
+  finally fLock.Unlock; end;
+end;
+
+function TbcKeyValueList.FindValue(aKey: ptrint): string;
+begin
+  fLock.Lock;
+  try
+  Result:= '';
+  MoveBeforeFirst;
+  while MoveNext do  begin
+    if PKeyValueRec(Examine)^.Key = aKey then begin
+      Result:= PKeyValueRec(Examine)^.Value;
+      break;
+    end;
+  end;
+  finally fLock.Unlock; end;
+end;
+
+procedure TbcKeyValueList.Delete(aKey: ptrint);
+begin
+  // maybe todo  walker & parent & deleteafter...
+end;
+
+procedure TbcKeyValueList.ClearRecords;
+var
+  Temp: PsllNode;
+begin
+  fLock.Lock;
+  try
+    Temp:= fHead^.sllnNext;                         { set temp = first in list }
+    while (Temp <> nil) do begin
+      fHead^.sllnNext:= Temp^.sllnNext;         { point head.next to temp.next }
+      Freemem(Temp^.sllnData,sizeof(TKeyValueRec));      { dispose of our data }
+      snmFreeNode(Temp);                          { dispose of our entire node }
+      Temp:= FHead^.sllnNext;             { set temp anew to the first in list }
+    end;
+    FCount:= 0;                                            { list is now empty }
+  finally fLock.Unlock; end;
+end;
+
+{====================================================================}
+
 
 {===TbcSingleList====================================================}
 constructor TbcSingleList.Create;
@@ -347,17 +449,17 @@ end;
 procedure TbcSingleList.MoveBeforeFirst;
 begin
   {set the cursor to the head node}
-  FCursor := FHead;
+  fCursor := fHead;
 end;
 {--------}
 function TbcSingleList.MoveNext : boolean;
 begin
   {advance the cursor to its own next pointer}
-  if (FCursor^.sllnNext = nil) then
-    Result := false
+  if (fCursor^.sllnNext = nil) then
+    Result:= false
   else begin
-    FCursor := FCursor^.sllnNext;
-    Result := true;
+    fCursor:= fCursor^.sllnNext;
+    Result:= true;
   end;
 end;
 {--------}
@@ -762,12 +864,12 @@ begin
 end;
 
 {--- MT OK ---}
-function TbcQueue.De_Queue: pointer; { threadsafe }
+function TbcQueue.De_Queue: pointer; { threadsafe } //bm
 var Temp: PsllNode;
-begin
+begin { trying to avoid exceptions in a lock }
+  if (Count = 0) then raise Exception.Create('TbcQueue.De_Queue: Queue is empty');
   Lock;
   try
-    if (Count = 0) then raise Exception.Create('TbcQueue.De_Queue: Queue is empty');
     Temp:= fHead^.sllnNext;
     Result:= Temp^.sllnData;
     fHead^.sllnNext:= Temp^.sllnNext;

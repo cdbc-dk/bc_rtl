@@ -59,7 +59,7 @@ type
 { factory creates a singleton }              //bm
 function StringWorkshop: IStringWorkshop;
 { utility functions }
-function bcGetFieldToken(const FieldNo: ptrint;const S: string;const Separator: char): string;
+function GetFieldToken(const FieldNo: ptrint;const S: string;const Separator: char): string;
 function StrCase(const S: string;Elements: array of string): ptrint;
 function Str2Bool(const S: string): boolean;
 
@@ -152,7 +152,7 @@ var
   B,E,C,I,Len: ptrint;
   InField: boolean;
 begin
-  Len:= system.length(S);
+  Len:= system.length(S);                                      { scan sentinel }
   if (Len > 0) and (FieldNo > 0) then begin                 { save clockcycles }
     I:= 0; C:= 1; InField:= false; B:= -1; E:= -1;            { initialization }
     while (C <= Len) do begin
@@ -167,7 +167,7 @@ begin
         break;                                  { Field found, we're done here }
       end;
       inc(C);                                               { increment cursor }
-    end;                                                          { continue ? }
+    end; { while }                                                { continue ? }
     if (B <> -1) and (E <> -1) then begin
       if E = Len then Result:= system.copy(S,B+1,E-B)       { special cases at }
       else if B = 1 then Result:= system.copy(S,B,E-B)     { beginning and end }
@@ -300,9 +300,9 @@ begin
   Result:= S_Workshop;
 end;
 
-function bcGetFieldToken(const FieldNo: ptrint;
-                         const S: string;
-                         const Separator: char): string;
+function GetFieldToken(const FieldNo: ptrint;
+                       const S: string;
+                       const Separator: char): string;
 var
   lGFT: TStringWorkshop;
 begin

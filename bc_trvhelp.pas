@@ -31,7 +31,7 @@
 
 unit bc_trvhelp;
 {$mode objfpc}{$H+}
-{$define debug}
+{-$define debug}
 interface
 uses
   bc_errorlog, Classes, SysUtils, LazUTF8, ComCtrls;
@@ -43,32 +43,45 @@ uses
 function AddRootNode(aTree: TTreeView;
                      const aCaption: string;
                      aData: pointer): TTreeNode;
+{ add a childnode with a reference to data, before its new siblings, to treeview, return the new node }
+function AddFirstChildNodeWithData(aTree: TTreeView;
+                                   aParent: TTreeNode;
+                                   const aCaption: string;
+                                   aData: pointer): TTreeNode;
 { add a childnode with a reference to data, to the treeview, return the new node }
 function AddChildNodeWithData(aTree: TTreeView;
                               aParent: TTreeNode;
                               const aCaption: string;
                               aData: pointer): TTreeNode;
-{ add a siblingnode to previoussiblingnode, with a data reference, to tree }
+{ add a siblingnode to previous siblingnode, with a data reference, to tree }
 function AddSiblingNodeWithData(aTree: TTreeView;
                                 aBrother: TTreeNode;
                                 const aCaption: string;
                                 aData: pointer): TTreeNode;
 { search the whole tree, for a node with matching text, return nil on not found }
-function GetNodeByText(aTree: TTreeView;
-                       const aValue: string;
-                       aVisible: boolean): TTreeNode;
+function bcGetNodeByText(aTree: TTreeView;
+                         const aValue: string;
+                         aVisible: boolean): TTreeNode;
 { search the whole tree, for a node with matching text,
   but compare only on the same level,return nil on not found }
-function GetNodeByTextAtLevel(aTree: TTreeView;
-                              const aValue: string;
-                              aVisible: boolean;
-                              aLevel: integer): TTreeNode;
+function bcGetNodeByTextAtLevel(aTree: TTreeView;
+                                const aValue: string;
+                                aVisible: boolean;
+                                aLevel: integer): TTreeNode;
+{ search the whole tree, for a node with matching text,
+  check also against parent and compare only on the same level,
+  return nil on not found }
+function bcGetNodeWithParentByTextAtLevel(aTree: TTreeView;
+                                          aParent: TTreeNode;
+                                          const aValue: string;
+                                          aVisible: boolean;
+                                          aLevel: integer): TTreeNode;
 { does a node with "text" exist in treeview }
-function SearchTreeViewBool(aTree: TTreeView;const aSearchString: string): boolean;
+function bcSearchTreeViewBool(aTree: TTreeView;const aSearchString: string): boolean;
 { delete selected node, if selected node has child nodes, they will be lost! }
-procedure DeleteSelectedTreeNode(aTree: TTreeView);
+procedure bcDeleteSelectedTreeNode(aTree: TTreeView);
 { clears the treeview, with a choice to keep rootnode or not }
-procedure ClearTreeview(aTree: TTreeView;SpareRoot: boolean = true);
+procedure bcClearTreeview(aTree: TTreeView;SpareRoot: boolean = true);
 
 
 //function Example: TObject; { global singleton }   
@@ -96,6 +109,15 @@ begin
   {$endif}
 end; { AddRootNode }
 
+function AddFirstChildNodeWithData(aTree: TTreeView;
+                                   aParent: TTreeNode;
+                                   const aCaption: string;
+                                   aData: pointer): TTreeNode;
+begin
+  if aTree.Items.Count = 0 then exit;
+  Result:= aTree.Items.AddChildObjectFirst(aParent,aCaption,aData);
+end; { AddFirstChildNodeWithData }
+
 function AddChildNodeWithData(aTree: TTreeView;
                               aParent: TTreeNode;
                               const aCaption: string;
@@ -114,7 +136,7 @@ begin
   Result:= aTree.Items.AddObject(aBrother,aCaption,aData);
 end; { AddSiblingNodeWithData }
 
-function GetNodeByText(aTree: TTreeView;
+function bcGetNodeByText(aTree: TTreeView;
                        const aValue: string;
                        aVisible: boolean): TTreeNode;
 var
@@ -146,7 +168,7 @@ begin
   end;
 end; { GetNodeByText }
 
-function GetNodeByTextAtLevel(aTree: TTreeView;
+function bcGetNodeByTextAtLevel(aTree: TTreeView;
                               const aValue: string;
                               aVisible: boolean;
                               aLevel: integer): TTreeNode;
@@ -164,19 +186,41 @@ begin
     end;
     Node:= Node.GetNext;
   end;
-end; { GetNodeByTextAtLevel }
+end; { bcGetNodeByTextAtLevel }
 
-function SearchTreeViewBool(aTree: TTreeView;const aSearchString: string): boolean;
+function bcGetNodeWithParentByTextAtLevel(aTree: TTreeView;
+                                          aParent: TTreeNode;
+                                          const aValue: string;
+                                          aVisible: boolean;
+                                          aLevel: integer): TTreeNode;
+var
+  Node: TTreeNode;
+begin
+  Result:= nil;
+  if aTree.Items.Count = 0 then exit; { nothing to do }
+  Node:= aTree.Items[0]; { ie.: root-node }
+  while Node <> nil do begin
+    if ((UpperCase(Node.Text) = UpperCase(aValue)) and
+       (Node.Level = aLevel) and (Node.Parent = aParent)) then begin
+      Result:= Node;
+      if aVisible then Result.MakeVisible;
+      break;
+    end;
+    Node:= Node.GetNext;
+  end;
+end; { bcGetNodeWithParentByTextAtLevel }
+
+function bcSearchTreeViewBool(aTree: TTreeView;const aSearchString: string): boolean;
 var
   Node: TTreeNode;
 begin
   Result:= false;
   Node:= nil;
-  Node:= GetNodeByText(aTree,aSearchString,false);
+  Node:= bcGetNodeByText(aTree,aSearchString,false);
   if Node <> nil then Result:= true;
-end; { SearchTreeViewBool }
+end; { bcSearchTreeViewBool }
 
-procedure DeleteSelectedTreeNode(aTree: TTreeView);
+procedure bcDeleteSelectedTreeNode(aTree: TTreeView);
 var
   RootNode: TTreeNode;
   { a subprocedure to recursively delete nodes }
@@ -189,19 +233,19 @@ begin { if selected node has child nodes, they will be lost! }
   if aTree.Selected = nil then exit;                        { nothing to do... }
   RootNode:= aTree.Items[0];     { get a hold of the root node in the treeview }
   DeleteNode(aTree.Selected);   { recursive deleting nodes apart from rootnode }
-end; { DeleteSelectedTreeNode }
+end; { bcDeleteSelectedTreeNode }
 
-procedure ClearTreeview(aTree: TTreeView;SpareRoot: boolean = true);
+procedure bcClearTreeview(aTree: TTreeView;SpareRoot: boolean = true);
 var RootNode: TTreeNode;
 begin
   if aTree.Items.Count = 0 then exit;                       { nothing to do... }
   while aTree.Items.Count >0 do begin                   { remove all rootnodes }
     RootNode:= atree.Items[0];      { get a hold of the rootnode in the treeview }
     aTree.Select(RootNode);                 { make sure the rootnode is selected }
-    DeleteSelectedTreeNode(aTree);    { recursively remove nodes apart from root }
+    bcDeleteSelectedTreeNode(aTree);    { recursively remove nodes apart from root }
     if not SpareRoot then aTree.Items.Delete(RootNode);    { finally remove root }
   end;
-end; { ClearTreeview }
+end; { bcClearTreeview }
 
 (*
 
